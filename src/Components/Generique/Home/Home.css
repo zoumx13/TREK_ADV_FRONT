@@ -1,0 +1,31 @@
+/* .fondVert {
+    padding: 80 0;
+    background-color: #12413c;
+    color: #ede8e6;
+    position: relative;
+    top: 0px;
+    height: 28.4vh;
+} */
+
+.heading {
+    color: white;
+    font-family: "Jost";
+    display: flex;
+    position: absolute;
+    margin-top: 0px;
+    font-weight: bold;
+    font-size: 60px;
+    text-align: center;
+    top: 450px;
+    left: 630px;
+
+}
+
+.img {
+    /* background-color: #e58e26; */
+    background-image: url("https://c.wallhere.com/photos/2c/d3/2500x1521_px_clouds_Hiking_landscape_mist_mountain_nature_path-1104561.jpg!d");
+    height: 100vh;
+    object-fit: cover;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

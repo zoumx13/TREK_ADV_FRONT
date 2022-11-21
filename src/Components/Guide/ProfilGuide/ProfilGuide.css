@@ -1,0 +1,146 @@
+.imgProfil1 {
+    background-image: url("https://i.pinimg.com/originals/7f/5a/fd/7f5afd88cdf503c6547af072f795237e.jpg");
+   
+    object-fit: cover;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+ margin-top: 0px; 
+ width: 100%;
+ height: 100vh;
+ 
+ }
+
+.Mainf1 {
+    width: 340px;
+    overflow: hidden;
+    background-color: #12413c;
+    font-size: 16px;
+    line-height: 22px;
+    color: #e58e26;
+    border-radius: 7px;
+    box-shadow: -5px -5px 35px #12413c;
+    margin: 50px auto;
+    animation-name: rotate;
+    animation-duration: 1.5s;
+    animation-fill-mode: both;
+     margin-top: -750px;
+}
+
+
+.img-profile {
+    width: 60%;
+    height: 60%;
+    margin-left: 70px;
+border-radius: 100px;
+}
+
+
+.top-card .menu-icon {
+    position: relative;
+    width: 22px;
+    bottom: 13.7em;
+    left: 1.1em;
+    cursor: pointer;
+}
+
+/*  */
+
+.top-card .name {
+    width: 50%;
+    height: 0;
+    text-align: center;
+    float: right;
+}
+
+.top-card .name p {
+    position: relative;
+    font-size: 50px;
+    font-weight: 800;
+    color: #000;
+    opacity: .5;
+    bottom: 140px;
+    line-height: 50px;
+    text-align: center;
+}
+
+.top-card .name span {
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.Description{
+    color: rgb(228, 212, 176);
+}
+
+.Para-Description{
+    color: rgb(228, 212, 176);
+}
+
+
+.Titre02 {
+    font-size: 20px;
+    color: rgb(228, 212, 176);
+    font-weight: 600;
+    margin: 12px 0;
+    border-bottom: 2px solid #e58e26;
+   
+    /* width: 10%; */
+}
+
+.middle-card, footer {
+    margin: 5px 25px;
+}
+
+.middle-card {
+    text-align: justify;
+}
+
+footer {
+    text-align: center;
+}
+
+
+
+
+
+footer .links {
+    border-top: 2px solid rgba(0, 0, 0, .1);
+    text-align: center;
+    margin-top: 10px;
+    padding: 8px 0;
+}
+
+footer .links  address {
+    font-size: 15px;
+}
+
+footer .links a { 
+    text-decoration: none;
+    font-weight: 600;
+    color: rgba(0, 0, 0, .9);
+}
+
+
+
+
+/* ANIMATION */
+@keyframes rotate {
+    0% {
+        transform-origin: left bottom;
+        transform: rotate3d(0, 0, 1, 45deg);
+        opacity: 0;
+    }
+    100% {
+        transform-origin: left bottom;
+        transform: none;
+        opacity: 1;
+    }
+
+
+    /* Fond ANIMATION */
+
+    
+}
+

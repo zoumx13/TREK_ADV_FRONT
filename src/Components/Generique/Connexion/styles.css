@@ -1,0 +1,161 @@
+
+.img1 {
+    
+    background-image: url("https://bulgariawalking.com/wp-content/uploads/2020/04/pirin-trekking-adventures.jpg");
+     height: 450px;
+  background-position:top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+    
+  
+}
+
+
+
+.fondVert1 {
+    background-color: #12413c;
+    color: #ede8e6;
+    position: relative;
+    height: 36.8vh;
+    border-bottom: 8px solid #e58e26;
+    border-top: 6px solid #e58e26;
+
+}
+
+
+
+.container{
+    display: block;
+    display: inline-block;
+    position: absolute;
+    top: 555px;
+    left: 705px;
+    
+}
+
+/* .login{
+    padding: 15px;
+         
+}
+
+
+.login input{
+   border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: thick;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    text-align: center;
+    
+} */
+.login {
+    background-color: rgba(255, 255, 255, 0);
+    padding: 30px 30px 30px 30px;
+    border-radius: 10px;
+    display: block;
+    position:relative;
+    justify-content: center;
+    align-items: center;
+   
+    width: 200px;
+    height: 150px;
+    /* margin-left: 85vh; */
+    
+   margin-top:  -15%;
+  
+ }
+
+ .login input{
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #12413c;
+    color:#e58e26;
+    font-family: 'Jost', sans-serif;
+    border-width: thick;
+    border:  3px solid #e58e26;
+    outline: none;
+}
+
+
+.réinitialiser {
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    margin-top: -10px;
+    margin-left: 30px;
+}
+.réinitialiser a{
+    color: white;
+  
+    
+}
+
+.Connexion{
+    display: flex;
+    position: absolute;
+text-align: center;
+color: #e58e26;
+font-family: 'Jost',  sans-serif;
+font-size: 23px;
+font-style: italic;
+top: 65%;
+left: 43%;
+}
+
+.button{
+    margin-top: 10px;
+    margin-left: 2%;
+    
+    height: 35px;
+    width: 120px;
+    background-color: #e58e26;
+    color: rgb(3, 71, 26);
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: bold; 
+    border-radius: 20px;
+    border-color: #e58e26;
+    cursor: pointer;
+}
+
+
+@media (max-width: 1024px  ) {
+    .container{
+        display: flex;
+        position: absolute;
+        top: 545px;
+        left: 80px;
+      
+    }
+    
+    .Connexion{
+    display: flex;
+    position: absolute;
+text-align: center;
+color: #e58e26;
+font-family: 'Jost',  sans-serif;
+font-size: 23px;
+font-style: italic;
+top: 96%;
+left: 43%;
+}
+
+.login {
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0);
+    padding: 30px 30px 30px 30px;
+    border-radius: 10px;
+    position: absolute;
+    top: 100%;
+    left: 35%;
+    width: 200px;
+    height: 150px;
+    
+   
+ }
+ 
+  
+  
+  }

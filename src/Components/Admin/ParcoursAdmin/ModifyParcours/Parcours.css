@@ -1,0 +1,256 @@
+.Gestion{
+    font-size: 20px;
+    background-color: #12413c;
+    border-bottom: 6px solid #e58e26;
+    color: white;
+    padding: 1px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'Jost', sans-serif;
+ }
+ 
+ .Creation-Parcours{
+    font-family: 'Jost', sans-serif;
+    text-align: center;
+    margin-top: 50px; 
+    font-size: 25px;
+    background-color: #12413c;
+    border-bottom: 6px solid #e58e26;
+    color: white;
+    padding: 1px;
+    
+    
+ }
+ 
+ 
+ .Liste{
+    font-size: 20px;
+    text-align: center;
+    background-color: #12413c;
+    border-bottom: 6px solid #e58e26;
+    color: white;
+    padding: 1px;
+    margin-bottom: 20px;
+ }
+ 
+ .principale{
+   display: flex;
+   margin-left: 150px;
+ }
+ 
+ .container1 {
+    margin-left: 370px;
+    margin-top: 100px; 
+    
+   
+ }
+ 
+ .container2 {
+    margin-left: 250px;
+    margin-top: 100px; 
+   
+     
+ }
+ 
+ .Nom{
+    margin-bottom: 15px;
+    text-align: center;
+    
+ }
+ 
+ .Nom input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width:  3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+    
+ }
+ 
+ .Durée{
+    margin-bottom: 15px;
+ }
+ 
+ .Durée input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+ 
+ .Description{
+    margin-bottom: 15px;
+    
+ }
+ 
+ .Description textarea{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 30px;
+ }
+ 
+ .Prix{
+    margin-bottom: 15px;
+ }
+ 
+ .Prix input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+ 
+ .Image{
+    margin-bottom: 15px;
+ }
+ 
+ .Image input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+ 
+ 
+ .Difficulté{
+    margin-bottom: 15px;
+ 
+ }
+ 
+ .Difficulté input{
+    border-color:  #e58e26;
+     background-color: rgba(27, 70, 4, 0);
+     border-width: 3px;
+     color: #e58e26;
+     padding: 8px;
+     font-family: 'Jost', sans-serif;
+     padding-right: 20px;
+ }
+ 
+ /* Liste des etapes */
+ 
+ .Nom1{
+    margin-bottom: 15px;
+    
+ }
+ 
+ .Nom1 input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+
+ .NumeroEtape{
+   margin-bottom: 15px;   
+}
+.NumeroEtape input{
+   border-color:  #e58e26;
+   background-color: rgba(27, 70, 4, 0);
+   border-width: 3px;
+   color: #e58e26;
+   padding: 8px;
+   font-family: 'Jost', sans-serif;
+   padding-right: 20px;
+}
+
+ 
+ .Localisation{
+    margin-bottom: 15px;
+ }
+ 
+ .Localisation input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+ 
+ .Description1{
+    margin-bottom: 15px;
+ }
+ 
+ .Description1 textarea{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 32px;
+ }
+ 
+ .Image1{
+    margin-bottom: 15px;
+ }
+ 
+ .Image1 input{
+    border-color:  #e58e26;
+    background-color: rgba(27, 70, 4, 0);
+    border-width: 3px;
+    color: #e58e26;
+    padding: 8px;
+    font-family: 'Jost', sans-serif;
+    padding-right: 20px;
+ }
+ 
+ .btn-Enregister{
+    margin-top:10px;
+    margin-left: 30px;
+    height: 35px;
+    width: 120px;
+    background-color: #17a33e;
+    color: rgb(255, 255, 255);
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: bold; 
+    border-radius: 20px;
+ 
+ }
+ 
+ .btn-Modifier{
+    margin-top:10px;
+    margin-left: 40px;
+    height: 35px;
+    width: 120px;
+    background-color: #e58e26;
+    color: rgb(252, 252, 252);
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: bold; 
+    border-radius: 20px;
+ }
+ 
+ .btn-Supprimer{
+    margin-top:10px;
+    margin-left: 40px;
+    height: 35px;
+    width: 120px;
+    background-color: #d82020;
+    color: rgb(255, 255, 255);
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    font-weight: bold; 
+    border-radius: 20px;
+ }
