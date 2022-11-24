@@ -5,25 +5,31 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./AffichageResasAdmin.css";
 
 function ResasAdmin() {
+  const [refresh,setRefresh] = useState(false)
+  const [allParcours, setAllParcours] = useState([]);
   const [idParcours, setIdParcours] = useState("");
   const [idResa, setIdResa] = useState("");
-  const [data, setData] = useState([]);
+  const [openResa, setOpenResa] = useState(false);
+  const [displayResa, setDisplayResa] = useState(false);
+
+
+
   const [index, setIndex] = useState();
   const [indexResa, setIndexResa] = useState();
+
   const [tabClients, setTabClients] = useState([]);
   const [listGuide, setListGuide] = useState([]);
   const [dateResa, setDateResa] = useState(new Date());
-  const [maxClients, setMaxClients] = useState("");
+  const [maxClients, setMaxClients] = useState();
   const [creaResa, setCreaResa] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalGuide, setModalGuide] = useState(false);
   const token = localStorage.getItem("token");
-  let subtitle;
-
   const headers = {
     "Content-Type": "application/json",
-    // authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+    Authorization: "Bearer " + token,
   };
+
   const customStyles = {
     content: {
       top: "50%",
@@ -45,9 +51,18 @@ function ResasAdmin() {
     },
   };
 
-  const handleMaxClientsChange = (event) => {
-    setMaxClients(event.target.value);
-  };
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
+  function openModalGuide() {
+    setModalGuide(true);
+  }
+  function closeModalGuide() {
+    setModalGuide(false);
+  }
 
   async function LoadParcours() {
     let options = {
@@ -57,29 +72,21 @@ function ResasAdmin() {
     let response = await fetch("http://127.0.0.1:8080/parcours/", options);
     let donnes = await response.json();
     if (!donnes) {
-      console.log("erreur");
       return;
     } else {
-      setData(donnes.reverse());
-      console.log("data : ", data);
-      console.log("data présente: ", donnes);
+      setAllParcours(donnes.reverse());
     }
   }
 
   async function CreateResa() {
-    let token = localStorage.getItem("token");
     let dataCrea = {
       openResa: true,
       maxClients: maxClients,
       dateReservation: dateResa.toISOString().slice(0, 10),
-      idGuide: "",
     };
     let options = {
       method: "PATCH",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      }),
+      headers: headers,
       body: JSON.stringify(dataCrea),
     };
     let response = await fetch(
@@ -88,66 +95,15 @@ function ResasAdmin() {
     );
     let donnes = await response.json();
     if (!donnes) {
-      console.log("erreur");
       return;
     } else {
       alert("Réservation ouverte");
-      window.location.reload();
+      setRefresh(!refresh)
     }
-  }
-
-  async function GetClients() {
-    //Je créer un tableau vide
-    let tabClientRequest = [];
-    let i = 0;
-    console.log("index : ", index, ", indexResa : ", indexResa);
-    console.log("data : ", data[index].reservations[indexResa].clients);
-    let lengthClients = data[index].reservations[indexResa].clients.length;
-    console.log(lengthClients);
-    //Faire une boucle qui va faire toute la longueur de la liste de clients
-    for (i = 0; i < lengthClients; i++) {
-      //Si j'ai un tableau de 10clients par ex, je vais récupérer à chaque ligne l'idClientRequest et send une requête pour chaque ID et renvoi les données
-      let idClientRequest =
-        data[index].reservations[indexResa].clients[i].idClient;
-      console.log(idClientRequest);
-      //Je récupère les id des clients
-      let dataRequest = { userId: idClientRequest };
-      let options = {
-        method: "POST",
-        body: JSON.stringify(dataRequest),
-        headers: new Headers({ "Content-Type": "application/json" }),
-      };
-      let reponse = await fetch(
-        "http://127.0.0.1:8080/users/reservationuser",
-        options
-      );
-      let donnees = await reponse.json();
-      console.log("donnes : ", donnees);
-      //Je renvoi les id dans un tableau
-      tabClientRequest.push(donnees.profil);
-    }
-    //Une fois les infos users récupérer on enregistre dans setTabClients
-    setTabClients(tabClientRequest);
-    console.log("tabClients : ", tabClients);
-  }
-
-  async function ListGuide() {
-    let options = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    let reponse = await fetch("http://127.0.0.1:8080/users/listguide", options);
-    let donnees = await reponse.json();
-    console.log("donnes : ", donnees);
-    setListGuide(donnees);
   }
 
   async function AssignGuide() {
     let idGuide = document.getElementById("guideChoice").value;
-
     console.log("VALUE ", idResa, idGuide);
     let data = {
       idGuide: idGuide,
@@ -155,10 +111,7 @@ function ResasAdmin() {
     };
     let options = {
       method: "PATCH",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      }),
+      headers: headers,
       body: JSON.stringify(data),
     };
     let reponse = await fetch(
@@ -169,51 +122,77 @@ function ResasAdmin() {
     alert("Guide ajouté");
     closeModalGuide();
   }
-  function openModal() {
-    setIsOpen(true);
+
+  async function ListGuide() {
+    let options = {
+      method: "GET",
+      headers: headers,
+    };
+    let reponse = await fetch("http://127.0.0.1:8080/users/listguide", options);
+    let donnees = await reponse.json();
+    setListGuide(donnees);
   }
-  function afterOpenModal() {
-    subtitle.style.color = "#f000";
+
+  async function getClientsByResa() {
+    let allClients = [];
   }
-  function closeModal() {
-    setIsOpen(false);
-  }
-  function openModalGuide() {
-    setModalGuide(true);
-  }
-  function afterOpenModalGuide() {
-    subtitle.style.color = "#f000";
-  }
-  function closeModalGuide() {
-    setModalGuide(false);
+
+  async function GetClients() {
+    if (allParcours != "") {
+      //Je créer un tableau vide
+      let tabClientRequest = [];
+      let lengthClients =
+        allParcours[index].reservations[indexResa].clients.length;
+      console.log("LENGTH CLIENT ", lengthClients, index, indexResa);
+      //Faire une boucle qui va faire toute la longueur de la liste de clients
+      for (let i = 0; i < lengthClients; i++) {
+        //Si j'ai un tableau de 10clients par ex, je vais récupérer à chaque ligne l'idClientRequest et send une requête pour chaque ID et renvoi les données
+        let idClientRequest =
+          allParcours[index].reservations[indexResa].clients[i].idClient;
+        console.log("TESSSSSSSSSSSSSSST ", idClientRequest, 1);
+        //Je récupère les id des clients
+        let dataRequest = { userId: idClientRequest };
+        let options = {
+          method: "POST",
+          body: JSON.stringify(dataRequest),
+          headers: headers,
+        };
+        let reponse = await fetch(
+          "http://127.0.0.1:8080/users/reservationuser",
+          options
+        );
+        let donnees = await reponse.json();
+        console.log("donnes : ", donnees);
+        //Je renvoi les id dans un tableau
+        tabClientRequest.push(donnees.profil);
+      }
+      //Une fois les infos users récupérer on enregistre dans setTabClients
+      setTabClients(tabClientRequest);
+      console.log("tabClients : ", tabClientRequest);
+    }
   }
 
   useEffect(() => {
     //Lance le loadParcours et renvoie des donnees vides au 1er chargement
     LoadParcours();
-  }, []);
-
-  useEffect(() => {
-    //Renvoie les donnees au 2eme chargement
-    console.log("datauseEffect : ", data);
-  }, [data]);
-
-  useEffect(() => {
-    //Quand on met à jour l'index résas sur le clic sur le bouton on lance getClients et met à jour indexResa
-    GetClients();
-  }, [indexResa]);
+  }, [refresh]);
 
   useEffect(() => {
     //Quand on met à jour l'index résas sur le clic sur le bouton on lance getClients et met à jour indexResa
     ListGuide();
   }, []);
 
+  useEffect(() => {
+    //Quand on met à jour l'index résas sur le clic sur le bouton on lance getClients et met à jour indexResa
+    GetClients();
+  }, [indexResa]);
+
   return (
     <header>
       <div id="Resa">
         <div className="scrollbar2" id="style-4">
           <ul>
-            {data?.map((item, index) => (
+            {allParcours?.map((item, index) => (
               <li key={item._id}>
                 <div className="box">
                   <div className="box-inner">
@@ -257,11 +236,14 @@ function ResasAdmin() {
                         <button
                           className="btn"
                           onClick={() => {
+                            setDisplayResa(!displayResa);
+                            setOpenResa(false);
                             setIdParcours(item._id);
+
+
                             setIndex(index);
                             setIdResa("");
                             setTabClients();
-                            setCreaResa(false);
                           }}
                         >
                           Détail réservations
@@ -269,11 +251,13 @@ function ResasAdmin() {
                         <button
                           className="btn"
                           onClick={() => {
+                            setOpenResa(!openResa);
+                            setDisplayResa(false);
                             setIdParcours(item._id);
+                            
                             setIndex("");
                             setIdResa("");
                             setTabClients();
-                            setCreaResa(true);
                           }}
                         >
                           Ouvrir réservation
@@ -287,7 +271,7 @@ function ResasAdmin() {
           </ul>
         </div>
         <div>
-          {creaResa === true ? (
+          {openResa === true && (
             <li>
               <article>
                 <div>
@@ -301,17 +285,18 @@ function ResasAdmin() {
                     onChange={(date) => setDateResa(date)}
                   />
                   <input
-                    type="text"
+                    type="number"
                     id="maxClients"
+                    min="1"
                     placeholder="Clients Max "
-                    onChange={handleMaxClientsChange}
+                    onChange={(event) => setMaxClients(event.target.value)}
                   />
 
                   <button
                     id="btn-resa"
                     onClick={() => {
                       CreateResa();
-                      setCreaResa(false);
+                      setOpenResa(false);
                     }}
                   >
                     Ouvrir
@@ -319,119 +304,117 @@ function ResasAdmin() {
                 </div>
               </article>
             </li>
-          ) : (
-            <div></div>
           )}
 
-          <div className="scrollbar3" id="style-5">
-            <ul id="ul1">
-              {data[index]?.reservations?.map((item, index) => (
-                <li key={item._id}>
-                  <article id="dResa">
-                    <div>
-                      <p id="1"> Date Réservation : {item.dateReservation}</p>
-                    </div>
-                    <div>
-                      <p id="2">
-                        {" "}
-                        Nombre de clients inscrits : {item.clients.length}
-                      </p>
-                    </div>
-                    <div>
-                      <p id="3"> Nombre de clients max : {item.maxClients}</p>
-                    </div>
-                    <button
-                      id="btn-client"
-                      onClick={() => {
-                        setIndexResa(index);
-                        setIdResa("");
-                        openModal();
-                      }}
-                    >
-                      Liste clients
-                    </button>
-                    <button
-                      id="btn-guide"
-                      onClick={() => {
-                        setIdResa(item._id);
-                        setTabClients();
-                        openModalGuide();
-                      }}
-                    >
-                      Attribuer Guide
-                    </button>
-                  </article>
-                </li>
-              ))}
-            </ul>
-            <ul>
+          {displayResa === true && (
+            <div className="scrollbar3" id="style-5">
+              <ul id="ul1">
+                {allParcours[index]?.reservations?.map((item, index) => (
+                  <li key={item._id}>
+                    <article id="dResa">
+                      <div>
+                        <p id="1"> Date Réservation : {item.dateReservation}</p>
+                      </div>
+                      <div>
+                        <p id="2">
+                          {" "}
+                          Nombre de clients inscrits : {item.clients.length}
+                        </p>
+                      </div>
+                      <div>
+                        <p id="3"> Nombre de clients max : {item.maxClients}</p>
+                      </div>
+                      <button
+                        id="btn-client"
+                        onClick={() => {
+                          setIndexResa(index);
+                          setIdResa("");
+                          openModal();
+                        }}
+                      >
+                        Liste clients
+                      </button>
+                      <button
+                        id="btn-guide"
+                        onClick={() => {
+                          setIdResa(item._id);
+                          setTabClients();
+                          openModalGuide();
+                        }}
+                      >
+                        Attribuer Guide
+                      </button>
+                    </article>
+                  </li>
+                ))}
+              </ul>
+              <ul>
+                <Modal
+                  ariaHideApp={false}
+                  isOpen={modalIsOpen}
+                  onRequestClose={closeModal}
+                  style={customStyles}
+                  contentLabel="Example Modal"
+                >
+                  <button onClick={closeModal}>close</button>
+                  {tabClients?.map((item) => {
+                    return (
+                      <li key={item._id}>
+                        <article>
+                          <div>
+                            <p> Nom : {item.nom}</p>
+                          </div>
+                          <div>
+                            <p> Prenom : {item.prenom}</p>
+                          </div>
+                        </article>
+                      </li>
+                    );
+                  })}
+                </Modal>
+              </ul>
+
               <Modal
                 ariaHideApp={false}
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={customStyles}
+                isOpen={modalGuide}
+                onRequestClose={closeModalGuide}
+                style={customStylesGuide}
                 contentLabel="Example Modal"
               >
-                <button onClick={closeModal}>close</button>
-                {tabClients?.map((item) => {
-                  return (
-                    <li key={item._id}>
-                      <article>
-                        <div>
-                          <p> Nom : {item.nom}</p>
-                        </div>
-                        <div>
-                          <p> Identifiant : {item.identifiant}</p>
-                        </div>
-                      </article>
-                    </li>
-                  );
-                })}
+                <ul>
+                  <li>
+                    <article>
+                      <div>
+                        <label htmlFor="user_select">
+                          Sélectionnez un guide: &nbsp;&nbsp;
+                        </label>
+                        <select name="users">
+                          {listGuide.map((guides) => {
+                            return (
+                              <option
+                                id="guideChoice"
+                                value={guides.id}
+                                key={guides._id}
+                              >
+                                {guides.nom} {guides.prenom}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <button
+                        onClick={() => {
+                          AssignGuide();
+                        }}
+                      >
+                        Valider
+                      </button>
+                    </article>
+                  </li>
+                </ul>
               </Modal>
-            </ul>
-
-            <Modal
-              ariaHideApp={false}
-              isOpen={modalGuide}
-              onAfterOpen={afterOpenModal}
-              onRequestClose={closeModalGuide}
-              style={customStylesGuide}
-              contentLabel="Example Modal"
-            >
-              <ul>
-                <li>
-                  <article>
-                    <div>
-                      <label htmlFor="user_select">
-                        Sélectionnez un guide: &nbsp;&nbsp;
-                      </label>
-                      <select name="users">
-                        {listGuide.map((guides) => {
-                          return (
-                            <option
-                              id="guideChoice"
-                              value={guides.id}
-                              key={guides._id}
-                            >
-                              {guides.nom} {guides.prenom}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <button
-                      onClick={() => {
-                        AssignGuide();
-                      }}
-                    >
-                      Valider
-                    </button>
-                  </article>
-                </li>
-              </ul>
-            </Modal>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

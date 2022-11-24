@@ -5,10 +5,6 @@ import "./parcoursDetails.css";
 
 export default function ModifyParcours() {
   const navigate = useNavigate();
-  const headers = {
-    "Content-Type": "application/json",
-    // authorization: `Bearer ${JSON.parse(localStorage.getdetails("token"))}`,
-  };
   let { id } = useParams();
   const [details, setDetails] = useState();
   const [etape, setEtape] = useState(false);
@@ -36,6 +32,11 @@ export default function ModifyParcours() {
   const [niveauDifficulte, setNiveauDifficulte] = useState();
   const [descriptionParcours, setDescriptionParcours] = useState();
   const [imgIllustration, setImgIllustration] = useState([]);
+  let token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  }
 
   const UploadImages = (e) => {
     const img = {
@@ -58,6 +59,7 @@ export default function ModifyParcours() {
     setNiveauDifficulte("");
     setDescriptionParcours("");
     setImgIllustration([]);
+    setImage([])
   };
   const updatePicture = async (id, idStep) => {
     const formData = new FormData();
@@ -80,7 +82,70 @@ export default function ModifyParcours() {
       setImage([]);
     }
   };
-
+  const chooseAddStep = async (event) => {
+    event.preventDefault();
+    clearInput();
+    setStepChoice(defaultStep);
+    if (modSupStep === true) {
+      setModSupStep(false);
+    } else {
+      setAddStep(!addStep);
+      setModSupParcours(false);
+    }
+  };
+  const chooseModSupStep = async (event) => {
+    event.preventDefault();
+    clearInput();
+    if (modSupStep === false && addStep === true) {
+      setModSupStep(true);
+      setModSupParcours(false);
+    } else if (addStep === false) {
+      setAddStep(true);
+      setModSupStep(true);
+      setModSupParcours(false);
+    } else if (modSupStep === true && addStep === true) {
+      setAddStep(false);
+      setModSupStep(false);
+      setModSupParcours(false);
+      setStepChoice(defaultStep);
+    }
+  };
+  const chooseModSupParcours = async (event) => {
+    clearInput()
+    event.preventDefault();
+    if (modSupParcours === false) {
+      setNomParcours(details.nomParcours);
+      setDureeParcours(details.dureeParcours);
+      setPrix(details.prix);
+      setNiveauDifficulte(details.niveauDifficulte);
+      setDescriptionParcours(details.description);
+      setImgIllustration(details.imgIllustration);
+      setModSupParcours(true);
+      setAddStep(false);
+      setModSupStep(false);
+    } else {
+      setModSupParcours(false);
+    }
+  };
+  const handleStepChange = async (event) => {
+    event.preventDefault();
+    if (event.target.value !== "") {
+      const goodStep = details.etape.filter(
+        (step) => step.nomEtape === event.target.value
+      );
+      setNomEtape(goodStep[0].nomEtape);
+      setNumeroEtape(goodStep[0].numeroEtape);
+      setLat(goodStep[0].localisation[0].lat);
+      setLong(goodStep[0].localisation[0].long);
+      setDescription(goodStep[0].descriptionEtape);
+      setImgIllustrationEtape(goodStep[0].imgIllustrationEtape);
+      setStepChoice(goodStep[0]);
+      setIdStep(goodStep[0]._id);
+    } else {
+      clearInput();
+      setStepChoice(defaultStep);
+    }
+  };
   async function getParcoursDetails(id) {
     let options = {
       method: "GET",
@@ -94,20 +159,6 @@ export default function ModifyParcours() {
       setDetails(donnes);
     }
   }
-  const deleteParcours = async (id) => {
-    let options = {
-      method: "DELETE",
-      headers: headers,
-    };
-    let response = await fetch(
-      `http://127.0.0.1:8080/parcours/deleteParcours/${id}`,
-      options
-    );
-    let donnes = await response.json();
-    if (donnes) {
-      navigate("/parcours");
-    }
-  };
   const modifyParcours = async (id) => {
     let infoParcours = {
       nomParcours: nomParcours,
@@ -161,69 +212,6 @@ export default function ModifyParcours() {
         alert(`Parcours ${nomParcours} modifié`);
         navigate("/parcours");
       }
-    }
-  };
-  const chooseAddStep = async (event) => {
-    event.preventDefault();
-    clearInput();
-    setStepChoice(defaultStep);
-    if (modSupStep === true) {
-      setModSupStep(false);
-    } else {
-      setAddStep(!addStep);
-      setModSupParcours(false);
-    }
-  };
-  const chooseModSupStep = async (event) => {
-    event.preventDefault();
-    clearInput();
-    if (modSupStep === false && addStep === true) {
-      setModSupStep(true);
-      setModSupParcours(false);
-    } else if (addStep === false) {
-      setAddStep(true);
-      setModSupStep(true);
-      setModSupParcours(false);
-    } else if (modSupStep === true && addStep === true) {
-      setAddStep(false);
-      setModSupStep(false);
-      setModSupParcours(false);
-      setStepChoice(defaultStep);
-    }
-  };
-  const chooseModSupParcours = async (event) => {
-    event.preventDefault();
-    if (modSupParcours === false) {
-      setNomParcours(details.nomParcours);
-      setDureeParcours(details.dureeParcours);
-      setPrix(details.prix);
-      setNiveauDifficulte(details.niveauDifficulte);
-      setDescriptionParcours(details.description);
-      setModSupParcours(true);
-      setAddStep(false);
-      setModSupStep(false);
-    } else {
-      setModSupParcours(false);
-      clearInput();
-    }
-  };
-  const handleStepChange = async (event) => {
-    event.preventDefault();
-    if (event.target.value !== "") {
-      const goodStep = details.etape.filter(
-        (step) => step.nomEtape === event.target.value
-      );
-      setNomEtape(goodStep[0].nomEtape);
-      setNumeroEtape(goodStep[0].numeroEtape);
-      setLat(goodStep[0].localisation[0].lat);
-      setLong(goodStep[0].localisation[0].long);
-      setDescription(goodStep[0].descriptionEtape);
-      setImgIllustrationEtape(goodStep[0].imgIllustrationEtape);
-      setStepChoice(goodStep[0]);
-      setIdStep(goodStep[0]._id);
-    } else {
-      clearInput();
-      setStepChoice(defaultStep);
     }
   };
   const AddStep = async (event) => {
@@ -391,7 +379,7 @@ export default function ModifyParcours() {
         <div className="containeur">
           <div className="Liste">
             <button className="btnAdd" onClick={chooseModSupParcours}>
-              Modifier/Supprimer parcours
+              Modifier parcours
             </button>
             <button className="btnAdd" onClick={chooseAddStep}>
               Ajouter une étape
@@ -407,7 +395,7 @@ export default function ModifyParcours() {
               <div className="champInput">
                 {modSupStep !== false ? (
                   <div>
-                    <label for="step_select">
+                    <label htmlFor="step_select">
                       Sélectionnez une étape: &nbsp;&nbsp;
                     </label>
                     <select
@@ -483,7 +471,12 @@ export default function ModifyParcours() {
                   </div>
                   {modSupStep == false ? (
                     <div>
-                      <p className="Nouv-Img">Entrez Nouvelle Image</p>
+                      {!image.preview ? (
+                        <p className="Nouv-Img">Entrez Nouvelle Image</p>
+                      ) : (
+                        <img src={image.preview} />
+                      )}
+
                       <div className="Image1">
                         <input
                           type="file"
@@ -499,10 +492,15 @@ export default function ModifyParcours() {
                   )}
                   {nomEtape != "" && modSupStep === true ? (
                     <div>
-                      <img
-                        className="img-1"
-                        src={`http://127.0.0.1:8080/etapes/${imgIllustrationEtape}`}
-                      />
+                      {!image.preview ? (
+                        <img
+                          className="img-1"
+                          src={`http://127.0.0.1:8080/etapes/${imgIllustrationEtape}`}
+                        />
+                      ) : (
+                        <img src={image.preview} />
+                      )}
+
                       <div className="Image1">
                         <input
                           type="file"
@@ -619,7 +617,13 @@ export default function ModifyParcours() {
                   />
                 </div>
                 <div>
-                  <p className="Nouv-Img">Entrez Nouvelle Image</p>
+                  {!image.preview ? (
+                    <img
+                      src={`http://127.0.0.1:8080/parcours/${imgIllustration}`}
+                    />
+                  ) : (
+                    <img src={image.preview} />
+                  )}
                   <div className="Image1">
                     <input
                       type="file"
@@ -634,17 +638,10 @@ export default function ModifyParcours() {
                   <div>
                     <button
                       className="btnAdd"
-                      onClick={() => deleteParcours(details._id)}
-                    >
-                    <span>Supprimer</span>
-                    <i className="button__icon fas fa-chevron-right"></i>
-                    </button>
-                    <button
-                      className="btnAdd"
                       onClick={() => modifyParcours(details._id)}
                     >
-                    <span>Modifier</span>
-                    <i className="button__icon fas fa-chevron-right"></i>
+                      <span>Modifier</span>
+                      <i className="button__icon fas fa-chevron-right"></i>
                     </button>
                     <button
                       className="btnAdd"
@@ -652,8 +649,8 @@ export default function ModifyParcours() {
                         setModSupParcours(false);
                       }}
                     >
-                    <span>Annuler</span>
-                    <i className="button__icon fas fa-chevron-right"></i>
+                      <span>Annuler</span>
+                      <i className="button__icon fas fa-chevron-right"></i>
                     </button>
                   </div>
                 </div>

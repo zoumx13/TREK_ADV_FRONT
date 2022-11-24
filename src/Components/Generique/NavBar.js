@@ -1,20 +1,18 @@
 import React from "react";
-import { Routes, Route, Outlet, Link, BrowserRouter, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userContext } from "../../context/userContext";
 import { useContext } from "react";
 
-
-
 function NavBar() {
   //NavBar en fonction des rôles utilisation du UseContext
-  const { identifiant, setIdentifiant, role, setRole } = useContext(userContext);
+  const { identifiant, setIdentifiant, role, setRole } =
+    useContext(userContext);
   const navigate = useNavigate();
-
 
   function click() {
     setIdentifiant("");
     setRole("");
-    //On vide le token pour la déconnexion 
+    //On vide le token pour la déconnexion
     localStorage.clear("token");
     //Avec un retour sur la page Home
     navigate("/");
@@ -27,26 +25,21 @@ function NavBar() {
         <a href="#" className="logo">
           My Trek Adventure
         </a>
-        <a>
-          <Link className="link-1" to="/">
-            Home
-          </Link>
-        </a>
         {/* Affichage de la 1er NavBar si l'identifiant est nul */}
         {!identifiant ? (
           <>
             <ul>
-              <li>
+            <li>
                 <p>
-                  <Link className="link-1" to="/connexion">
-                    Connexion
+                  <Link className="link-1" to="/">
+                    Accueil
                   </Link>
                 </p>
               </li>
               <li>
                 <p>
-                  <Link className="link-1" to="/présentation">
-                    Présentation
+                  <Link className="link-1" to="/connexion">
+                    Connexion
                   </Link>
                 </p>
               </li>
@@ -67,6 +60,10 @@ function NavBar() {
             {/* 2eme NavBar si l'identifiant est l'admin avec une condition terner si le role est = à l'admin alors tu affiches cette navbar */}
             {role == "admin" ? (
               <>
+                {" "}
+                <Link className="link-1" to="/AccueilAdmin">
+                  Accueil
+                </Link>
                 <Link className="link-1" to="/parcours">
                   Gestion des Parcours
                 </Link>
@@ -90,14 +87,7 @@ function NavBar() {
                     </Link>
                   </>
                 ) : (
-                  <>
-                    {role == "client" ? (
-                      <></>
-                    ) : (
-                      <></>
-                    )}
-
-                  </>
+                  <>{role == "client" ? <></> : <></>}</>
                 )}
               </>
             )}

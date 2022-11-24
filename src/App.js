@@ -1,9 +1,8 @@
-import { Routes, Route, Outlet, Link, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./App.css";
-import React, { useEffect } from "react";
+import React from "react";
 import Connexion from "./Components/Generique/Connexion/connexion";
 import Home from "./Components/Generique/Home/home";
-import Présentation from "./Components/Generique/Presentation/presentation";
 import Contact from "./Components/Generique/Contact/contact";
 import Parcours from "./Components/Admin/ParcoursAdmin/CreateParcours/CreateParcours";
 // import Footer from './components/footer';
@@ -28,14 +27,8 @@ function App() {
       <Routes>
         <Route path="/" exact element={<Home></Home>}></Route>
         <Route path="/connexion" element={<Connexion></Connexion>}></Route>
-        <Route
-          path="/présentation"
-          exact
-          element={<Présentation></Présentation>}
-        ></Route>
         <Route path="/contact" element={<Contact></Contact>}></Route>
         <Route path="/parcours" exact element={<Parcours></Parcours>}></Route>
-
         <Route
           path="/parcours/details/:id"
           exact
@@ -49,7 +42,6 @@ function App() {
           path="/AccueilAdmin"
           element={<AccueilAdmin></AccueilAdmin>}
         ></Route>
-
         <Route
           path="/AccueilGuide"
           element={<AccueilGuide></AccueilGuide>}

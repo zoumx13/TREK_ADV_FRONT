@@ -1,8 +1,6 @@
 import "./styles.css";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-
-
 
 import { userContext } from "../../../context/userContext";
 import { useContext } from "react";
@@ -23,7 +21,6 @@ function Connexion() {
 
     let donnees = await reponse.json();
 
-    console.log(donnees);
     // Enregistrement du token dans le localStorage
     localStorage.setItem("token", donnees.token);
     if (donnees.message == "Connecté") {
@@ -88,13 +85,13 @@ function Connexion() {
           required
         />
 
-        <div class="réinitialiser">
+        <div className="réinitialiser">
           <a href="">Réinitialiser Password</a>
         </div>
         <div>
-          <button class="button">
-            <span class="button__text">Connexion</span>
-            <i class="button__icon fas fa-chevron-right"></i>
+          <button className="button">
+            <span className="button__text">Connexion</span>
+            <i className="button__icon fas fa-chevron-right"></i>
           </button>
         </div>
 

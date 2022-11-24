@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 import "./AccueilAdmin.css";
 
 function AccueilAdmin() {
     const [nextTrek,setNextTrek] = useState();
-    const [listGuide, setListGuide] = useState([])
+    const [listGuide, setListGuide] = useState([]);
+    const [calendarDetails, setCalendarDetails] = useState([]);
+    const date = new Date();
+    const newDate = date.toISOString().slice(0, 10);
     const [guide,setGuide] = useState();
     const token = localStorage.getItem("token");
 
@@ -17,7 +22,6 @@ function AccueilAdmin() {
       };
       let reponse = await fetch("http://127.0.0.1:8080/users/listguide", options);
       let donnees = await reponse.json();
-      console.log("donnes : ", donnees);
       setListGuide(donnees)
     }
     async function nextParcours() {
@@ -35,16 +39,15 @@ function AccueilAdmin() {
       );
       let donnes = await response.json();
       if (!donnes || donnes == undefined) {
-        console.log("erreur");
+        alert("Aucune réservation à venir.")
       } else {
         setNextTrek(donnes)
         let array =[]
         listGuide.map((guides)=>{
         if(guides.id===donnes[0].reservation.idGuide){
           array.push(guides.nom, guides.prenom)
-          console.log("ARRAY ", array)
-          setGuide(array)
         }
+        setGuide(array)
       })
       }
     }
@@ -66,7 +69,7 @@ function AccueilAdmin() {
         <div className="Next">
           <p className="Next1">Prochaine sortie : </p>
         </div>
-        {nextTrek != undefined && guide != undefined ? (
+        {nextTrek != undefined && guide != undefined &&
         <div className="texteP">
           <p>Le : {nextTrek[0].reservation.dateReservation}</p>
           <p>Site de parcours : {nextTrek[0].parcours.nomParcours}</p>
@@ -74,7 +77,14 @@ function AccueilAdmin() {
           <p>Clients inscrits : {nextTrek[0].reservation.clients.length}</p>
           <p>Clients maximum : {nextTrek[0].reservation.maxClients}</p>
         </div>
-        ) : <></>}
+        }
+        <div className="calendar">
+        <FullCalendar
+          plugins={[dayGridPlugin]}
+          initialView="dayGridMonth"
+          events={calendarDetails}
+        />
+      </div>
       </div>
     </div>
   );

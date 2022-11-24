@@ -11,19 +11,18 @@ function Parcours() {
   const [prix, setPrix] = useState();
   const [niveauDifficulte, setNiveauDifficulte] = useState();
   const [descriptionParcours, setDescriptionParcours] = useState();
-  const [imgIllustration, setImgIllustration] = useState([]);
+  const [image, setImage] = useState([]);
+  let token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "application/json",
-    // authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-  };
-  const [image, setImage] = useState([]);
+    Authorization: "Bearer " + token,
+  }
 
   const UploadImages = (e) => {
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     };
-
     setImage(img);
   };
 
@@ -79,8 +78,9 @@ function Parcours() {
           formData.append("file", image.data);
           let options = {
             method: "POST",
+            // headers : headers,
             headers: {
-              Authorization: "bearer " + id,
+              Authorization: "bearer " + token,
               // "Content-Type": "multipart/form-data boundary=something",
             },
             body: formData,
@@ -104,6 +104,19 @@ function Parcours() {
       setDureeParcours("");
       setParcours(!parcours);
     }
+  };
+  const deleteParcours = async (id) => {
+    let options = {
+      method: "DELETE",
+      headers: headers,
+    };
+    let response = await fetch(
+      `http://127.0.0.1:8080/parcours/deleteParcours/${id}`,
+      options
+    );
+    await response.json();
+    setParcours(!parcours)
+    alert(`Parcours supprimé.`);
   };
   useEffect(() => {
     LoadParcours();
@@ -150,6 +163,12 @@ function Parcours() {
                         >
                           Détail du parcours
                         </button>
+                        <button
+                          className="btn"
+                          onClick={() => deleteParcours(item._id)}
+                          >
+                          Supprimer
+                    </button>
                       </article>
                     </div>
                   </div>
@@ -165,7 +184,7 @@ function Parcours() {
         <div className="princip">
           <div className="container1">
             <div className="Gestion">
-              <p className="Para">Creation des Parcours</p>
+              <p className="Para">Créer un parcours</p>
             </div>
             <div className="Nom">
               <input
@@ -179,7 +198,8 @@ function Parcours() {
 
             <div className="Durée">
               <input
-                type="text"
+                type="time"
+                min="0:00"
                 id="durée"
                 placeholder="Durée du parcours"
                 value={dureeParcours}
@@ -199,7 +219,8 @@ function Parcours() {
 
             <div className="Prix">
               <input
-                type="text"
+                type="number"
+                min="0"
                 id="prix"
                 placeholder="Prix"
                 value={prix}
@@ -207,12 +228,13 @@ function Parcours() {
               />
             </div>
 
-            <p className="Nouv-Img">Entrez Nouvelle Image</p>
+            {!image.preview ? (
+              <p className="Nouv-Img">Entrez Nouvelle Image</p>
+            ) : (
+              <img src={image.preview} />
+            )}
 
             <div className="input-img">
-              {/* <label className="" htmlFor="img">
-                Entrez Nouvelle Image
-              </label> */}
               <input
                 type="file"
                 name="image"
@@ -221,10 +243,11 @@ function Parcours() {
                 id="uploadBtn"
               />
             </div>
-
             <div className="Difficulté">
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="3"
                 id="difficulté"
                 placeholder="Niveau difficulté 1 à 3"
                 value={niveauDifficulte}

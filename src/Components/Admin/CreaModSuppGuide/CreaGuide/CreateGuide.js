@@ -7,16 +7,21 @@ function CreateGuide() {
   const [allGuides, setAllGuides] = useState([]);
   const [addGuide, setAddGuide] = useState(false);
   const [modSupGuide, setModSupGuide] = useState(false);
-  const [img, setImg] = useState([]);
+  const [image, setImage] = useState([]);
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
   const [description, setDescription] = useState("");
   const [identifiant, setIdentifiant] = useState("");
   const [xp, setXp] = useState("");
+  const [photo_profil, setPhoto_profil] = useState([]);
   const [guide, setGuide] = useState(false);
   const [idGuide, setIdGuide] = useState("");
   // const [goodPassword, setGoodPassword] = useState("");
   let token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  }
   const numbers = "0123456789";
   const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
@@ -28,8 +33,7 @@ function CreateGuide() {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     };
-
-    setImg(img);
+    setImage(img);
   };
 
   const clearInput = async () => {
@@ -38,6 +42,8 @@ function CreateGuide() {
     setDescription("");
     setXp("");
     setIdentifiant("");
+    setPhoto_profil([]);
+    setImage([]);
   };
 
   function createPassword() {
@@ -52,49 +58,23 @@ function CreateGuide() {
     }
 
     return password;
-  }
-
-  async function ListGuide() {
-    let options = {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      }),
-    };
-    let reponse = await fetch("http://localhost:8080/users/listguide", options);
-    let donnees = await reponse.json();
-    if (!donnees) {
-      return;
-    } else {
-      setAllGuides(donnees);
-    }
-  }
+  };
 
   const chooseAddGuide = async (event) => {
     event.preventDefault();
     clearInput();
-    // setGuideChoice(defaultStep);
-    if (addGuide === false) {
-      setAddGuide(true);
-      setModSupGuide(false);
-    } else {
-      setAddGuide(false);
-    }
+    setAddGuide(true);
+    setModSupGuide(false);
   };
 
   const chooseModSupGuide = async (event) => {
     event.preventDefault();
     clearInput();
-    if (modSupGuide === false) {
-      setModSupGuide(true);
-      setAddGuide(false);
-    } else {
-      setModSupGuide(false);
-    }
+    setModSupGuide(true);
+    setAddGuide(false);
   };
 
-  const handleStepChange = async (event) => {
+  const handleGuideChange = async (event) => {
     event.preventDefault();
     clearInput();
     if (event.target.value !== "") {
@@ -126,9 +106,28 @@ function CreateGuide() {
       } else {
         setIdentifiant(goodGuide[0].identifiant);
       }
+      if (!goodGuide[0].photo_profil) {
+        setPhoto_profil([]);
+      } else {
+        setPhoto_profil(goodGuide[0].photo_profil);
+      }
       setIdGuide(goodGuide[0].id);
     }
   };
+
+  async function ListGuide() {
+    let options = {
+      method: "GET",
+      headers: headers,
+    }
+    let reponse = await fetch("http://localhost:8080/users/listguide", options);
+    let donnees = await reponse.json();
+    if (!donnees) {
+      return;
+    } else {
+      setAllGuides(donnees);
+    }
+  }
 
   async function NewGuide() {
     if (identifiant == "" || nom == "" || prenom == "") {
@@ -146,11 +145,7 @@ function CreateGuide() {
       };
       let options = {
         method: "POST",
-
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        }),
+        headers: headers,
         body: JSON.stringify(data),
       };
       let reponse = await fetch(
@@ -158,9 +153,30 @@ function CreateGuide() {
         options
       );
       let donnees = await reponse.json();
-      alert("Félicitation, le guide a été ajouté!");
-      clearInput();
-      setGuide(!guide);
+      if (donnees) {
+        const id = donnees._id;
+        if (image.data) {
+          const formData = new FormData();
+          formData.append("file", image.data);
+          let options = {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token,
+              // "Content-Type": "multipart/form-data boundary=something",
+            },
+            body: formData,
+          };
+          const response = await fetch(
+            `http://127.0.0.1:8080/users/imgUser/${id}`,
+            options
+          );
+          let result = await response.json();
+          const res = JSON.stringify(result);
+          if (res !== '{"message":"Echec"}') {
+            setImage([]);
+          }
+        }
+      }
       let data2 = {
         mail: identifiant,
         password: goodPassword,
@@ -179,35 +195,11 @@ function CreateGuide() {
         options2
       );
       let donnees2 = await reponse2.json();
-      console.log("MAIL", donnees2);
+      alert(`Nouveau guide ${donnees.nom} ${donnees.prenom} créé.`);
+      clearInput();
+      setGuide(!guide);
     }
   }
-  //     if (donnees) {
-  //         console.log("guide créé :", donnees);
-  //         setGuide(!guide);
-  // }
-
-  // async function LoadGuide() {
-  //     let options = {
-  //       method: "GET",
-  //       headers: headers,
-  //     };
-  //     let response = await fetch("http://127.0.0.1:8080/users/guide", options);
-  //     let donnes = await response.json();
-  //     if (!donnes) {
-  //       console.log("erreur");
-  //       return;
-  //     } else {
-  //       setGuide(donnees.reverse());
-  //       console.log("data présente: ", donnees);
-  //     }
-  //   }
-
-  //   navigate(`/users/guide/`);
-
-  //   useEffect(() => {
-  //     LoadGuide();
-  //   }, [guide]);
 
   const modifyGuide = async () => {
     let data = {
@@ -222,37 +214,53 @@ function CreateGuide() {
     } else {
       let options = {
         method: "PATCH",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        }),
+        headers: headers,
         body: JSON.stringify(data),
       };
       let reponse = await fetch(
-        "http://127.0.0.1:8080/users/modifyGuideadmin/" + idGuide,
+        `http://127.0.0.1:8080/users/modifyGuideadmin/${idGuide}`,
         options
       );
       await reponse.json();
-      alert("Guide mis à jour");
+      if (image.data) {
+        const formData = new FormData();
+        formData.append("file", image.data);
+        let options = {
+          method: "POST",
+          headers: {
+            Authorization: "bearer " + token,
+            // "Content-Type": "multipart/form-data boundary=something",
+          },
+          body: formData,
+        };
+        const response = await fetch(
+          `http://127.0.0.1:8080/users/imgUser/${idGuide}`,
+          options
+        );
+        let result = await response.json();
+        const res = JSON.stringify(result);
+        if (res !== '{"message":"Echec"}') {
+          setImage([]);
+        }
+      }
+      alert(`Guide ${nom} ${idGuide} mis à jour`);
+      navigate("/parcours");
       clearInput();
-      setGuide(!guide)
+      setGuide(!guide);
     }
   };
 
   const deleteGuide = async () => {
     let options = {
       method: "DELETE",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      }),
+      headers: headers,
     };
     let reponse = await fetch(
       "http://127.0.0.1:8080/users/deleteGuideadmin/" + idGuide,
       options
     );
     await reponse.json();
-    alert("Guide supprimé");
+    alert(`Guide ${nom} ${prenom} supprimé`);
     clearInput();
     setGuide(!guide);
   };
@@ -272,14 +280,14 @@ function CreateGuide() {
         <div className="princip1">
           <div className="container2">
             <div className="Gestion1">
-              <button className="btnAdd" onClick={chooseAddGuide}>
-                <span>Ajouter un guide</span>
-                <i className="button__icon fas fa-chevron-right"></i>
-              </button>
-              <button className="btnAdd" onClick={chooseModSupGuide}>
-                <span>Modifier/Supprimer un guide</span>
-                <i className="button__icon fas fa-chevron-right"></i>
-              </button>
+                <button className="btnAdd" onClick={chooseAddGuide}>
+                  <span>Ajouter un guide</span>
+                  <i className="button__icon fas fa-chevron-right"></i>
+                </button>
+                <button className="btnAdd" onClick={chooseModSupGuide}>
+                  <span>Modifier/Supprimer un guide</span>
+                  <i className="button__icon fas fa-chevron-right"></i>
+                </button>
             </div>
 
             {addGuide === true || modSupGuide === true ? (
@@ -287,13 +295,13 @@ function CreateGuide() {
                 <div className="PageCreaGuide">
                   {modSupGuide === true ? (
                     <div>
-                      <label for="step_select">
+                      <label htmlFor="step_select">
                         Sélectionnez un guide: &nbsp;&nbsp;
                       </label>
                       <select
                         // value={stepChoice.nomEtape}
                         name="step"
-                        onChange={handleStepChange}
+                        onChange={handleGuideChange}
                       >
                         <option id="stepChoice" value={""}>
                           --- Sélectionner un guide ---
@@ -303,7 +311,7 @@ function CreateGuide() {
                             <option
                               id="stepChoice"
                               value={guide.id}
-                              key={guide._id}
+                              key={guide.id}
                             >
                               {guide.nom} {guide.prenom}
                             </option>
@@ -363,35 +371,44 @@ function CreateGuide() {
                       value={identifiant}
                       onChange={(e) => setIdentifiant(e.target.value)}
                     />
-                    <p className="Nouv-Img1">Entrez une photo de profil</p>
-
-                    <div className="input-img1">
-                      {/* //             <label className="" htmlFor="img">
-//               Entrez Nouvelle Photo de Profil
-//             </label> */}
-                      <input
-                        type="file"
-                        name="image"
-                        onChange={UploadImages}
-                        className="form-control"
-                        id="uploadBtn"
+                  </div>
+                  <div>
+                    {photo_profil != "" && !image.preview && (
+                      <img
+                        src={`http://127.0.0.1:8080/users/${photo_profil}`}
                       />
-                    </div>
+                    )}
+                    {photo_profil && image.preview && (
+                      <img src={image.preview} />
+                    )}
+                  </div>
+                  <div className="input-img1">
+                    <input
+                      type="file"
+                      name="image"
+                      onChange={UploadImages}
+                      className="form-control"
+                      id="uploadBtn"
+                    />
                   </div>
                   <div className="btn-02">
                     {addGuide === true ? (
                       <div>
                         <button onClick={NewGuide}>Valider</button>
-                        <button>Annuler</button>
+                        <button onClick={() => setAddGuide(false)}>
+                          Annuler
+                        </button>
                       </div>
                     ) : (
                       <></>
                     )}
                     {modSupGuide === true ? (
                       <div>
-                        <button onClick={()=> modifyGuide()}>Modifier</button>
+                        <button onClick={() => modifyGuide()}>Modifier</button>
                         <button onClick={() => deleteGuide()}>Supprimer</button>
-                        <button>Annuler</button>
+                        <button onClick={() => setModSupGuide(false)}>
+                          Annuler
+                        </button>
                       </div>
                     ) : (
                       <></>
