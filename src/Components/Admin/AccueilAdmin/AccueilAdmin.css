@@ -1,4 +1,39 @@
-.imgAccueilAdmin {
+.block-up{
+    display: flex;
+}
+
+.calendar {
+    flex-grow: 3;
+}
+.nextTrek{
+    flex-grow: 3;
+}
+.pie{
+    flex-grow: 3;
+}
+
+.block-down{
+    display: flex;
+}
+
+.block-down div{
+    justify-content: center;
+    flex-grow: 3;
+}
+
+
+
+.mapContainerAdmin {
+    height: 69vh;
+    width: 152vh;
+    margin: 30px;
+    border: 1px solid #e58e26;
+    /* margin-top: 50px;
+    margin-left: -15px; */
+    /* z-index: 0; */
+  }
+
+/* .imgAccueilAdmin {
     background-image: url("https://web-cdn.wingly.io/image-albums/3K41sMjQWj6NxFM4miNukIbCNUGEllXC.jpg");
     height: 864px;
     object-fit: cover;
@@ -69,4 +104,4 @@
     margin-bottom: 50px;
     border:1px solid #e58e26;
     box-shadow: 12px 12px 2px 1px #0000003c;
-}
+} */
