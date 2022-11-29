@@ -1,3 +1,5 @@
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import React from "react";
@@ -14,11 +16,12 @@ import ModifyParcours from "./Components/Admin/ParcoursAdmin/ModifyParcours/Modi
 import ResasAdmin from "./Components/Admin/AffichageResasAdmin/AffichageResasAdmin";
 import ProfilGuide from "./Components/Guide/ProfilGuide/ProfilGuide";
 
-import Déconnexion from "./Components/Generique/Deconnexion/deconnexion";
 import NavBar from "./Components/Generique/NavBar";
 
-import CreateGuide from "./Components/Admin/CreaModSuppGuide/CreaGuide/CreateGuide";
+import CreateGuide from "./Components/Admin/CreaModSuppGuide/CreateGuide";
 import ReservationsDetails from "./Components/Guide/DetailsResa/DetailsResa";
+
+
 
 function App() {
   return (
@@ -28,20 +31,21 @@ function App() {
         <Route path="/" exact element={<Home></Home>}></Route>
         <Route path="/connexion" element={<Connexion></Connexion>}></Route>
         <Route path="/contact" element={<Contact></Contact>}></Route>
+        
+        <Route
+          path="/AccueilAdmin"
+          element={<AccueilAdmin></AccueilAdmin>}
+        ></Route>
         <Route path="/parcours" exact element={<Parcours></Parcours>}></Route>
+
+
         <Route
           path="/parcours/details/:id"
           exact
           element={<ModifyParcours />}
         ></Route>
-        <Route
-          path="/deconnexion"
-          element={<Déconnexion></Déconnexion>}
-        ></Route>
-        <Route
-          path="/AccueilAdmin"
-          element={<AccueilAdmin></AccueilAdmin>}
-        ></Route>
+
+
         <Route
           path="/AccueilGuide"
           element={<AccueilGuide></AccueilGuide>}
@@ -67,6 +71,7 @@ function App() {
           path="/AffichageResasAdmin"
           element={<ResasAdmin></ResasAdmin>}
         ></Route>
+
       </Routes>
       {/* <div><Footer></Footer></div> */}
     </BrowserRouter>

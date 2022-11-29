@@ -1,5 +1,3 @@
-import "./contact.css";
-
 function Contact() {
     
   

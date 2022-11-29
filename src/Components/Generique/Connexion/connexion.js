@@ -1,13 +1,12 @@
-import "./styles.css";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, {useContext} from "react";
+import { useNavigate, }from "react-router-dom";
 import { userContext } from "../../../context/userContext";
-import { useContext } from "react";
+import { Button, Form } from "react-bootstrap";
 
 function Connexion() {
-  //Création du UseContext 
-  const { identifiant, setIdentifiant, role, setRole } = useContext(userContext);
+  //Création du UseContext
+  const { identifiant, setIdentifiant, role, setRole } =
+    useContext(userContext);
   const navigate = useNavigate();
   const login = async (identifiant, password) => {
     let data = { password: password, identifiant: identifiant };
@@ -24,7 +23,6 @@ function Connexion() {
     // Enregistrement du token dans le localStorage
     localStorage.setItem("token", donnees.token);
     if (donnees.message == "Connecté") {
-      
       setIdentifiant(identifiant);
       setRole(donnees.userRole);
       if (donnees.userRole == "admin") {
@@ -34,12 +32,13 @@ function Connexion() {
         if (donnees.userRole == "guide") {
           alert(donnees.userRole + " " + donnees.message);
           navigate("/AccueilGuide");
-      } else {
-        alert("Vous n'êtes pas autorisé à naviguer sur ce site web. Veuillez vous rediriger vers l'application mobile!");
-        navigate("/AccueilClient");
+        } else {
+          alert(
+            "Vous n'êtes pas autorisé à naviguer sur ce site web. Veuillez vous rediriger vers l'application mobile!"
+          );
+          navigate("/AccueilClient");
+        }
       }
-    }
-      
     } else {
       alert("Identifiant ou Mot de Passe incorrect!");
     }
@@ -62,43 +61,38 @@ function Connexion() {
         {/* <h2 className="heading">My Trek Adventure</h2> */}
 
         {/* </body> */}
-     
+
         <div className="fondVert1"></div>
 
-      <div className="Connexion">
-       
-      
-      <form className="login" onSubmit={handleSubmit}>
-      <p>Connexion</p>
-        <input
-          className="log"
-          id="mail"
-          type="text"
-          placeholder="Email"
-          required
-        />
-        <input
-          className="log"
-          id="password"
-          type="password"
-          placeholder="Password"
-          required
-        />
+        <div className="Connexion">
+          <Form className="login" onSubmit={handleSubmit}>
+            <Form.Label>Connexion</Form.Label>
+            <Form.Control
+              className="log"
+              id="mail"
+              type="text"
+              placeholder="Email"
+              required
+            />
+            <Form.Control
+              className="log"
+              id="password"
+              type="password"
+              placeholder="Password"
+              required
+            />
 
-        <div className="réinitialiser">
-          <a href="">Réinitialiser Password</a>
+            <div className="réinitialiser">
+              <a href="">Réinitialiser Password</a>
+            </div>
+            <div>
+              <Button type="submit" variant="warning" className="button"  >
+                <span className="button__text">Connexion</span>
+                <i className="button__icon fas fa-chevron-right"></i>
+              </Button>
+            </div>
+          </Form>
         </div>
-        <div>
-          <button className="button">
-            <span className="button__text">Connexion</span>
-            <i className="button__icon fas fa-chevron-right"></i>
-          </button>
-        </div>
-
-      </form>
-      </div>
-
-
       </div>
     </header>
   );

@@ -27,10 +27,8 @@ export default function Calendar() {
     );
     let donnees = await reponse.json();
     setData(donnees);
-    console.log(donnees)
       // création des paramétre d'affichage sur le calendrier
-      donnees.map((event) => {
-
+      donnees.map((event) => {  
         details.push({
           title: event.nomParcours,
           date: event.dateReservation,

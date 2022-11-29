@@ -238,7 +238,7 @@
  
  /* Liste des etapes */
 
-/* Button Détail du Resas */
+/* Button Détail du Resas
 #Resa .btn{
     margin-top: 50%x;
     margin-left: 4%;
@@ -269,7 +269,7 @@
     cursor: pointer;
     margin-bottom: 50px;
     box-shadow: 3px 3px 2px 1px #050300b2;
-  }
+  } */
 
 
 
@@ -295,7 +295,7 @@
    margin-left: 30px;
   }
 
-  #btn-resa {
+  /* #btn-resa {
    margin-top: 1%;
     margin-left: 1%;
     height: 35px;
@@ -344,7 +344,7 @@
     cursor: pointer;
     margin-bottom: 50px;
     box-shadow: 3px 3px 2px 1px #050300b2;
-  }
+  } */
 
   #dResa {
    width: 40vh;

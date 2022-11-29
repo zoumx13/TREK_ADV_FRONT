@@ -64,6 +64,7 @@ export default function ReservationsDetails() {
         });
       });
       setAllStep(step);
+      console.log(step)
     }
   }
   function openModal() {

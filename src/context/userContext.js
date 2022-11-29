@@ -36,7 +36,7 @@ export default function UserProvider(props) {
 
         if (result.profil.identifiant) {
           setIdentifiant(result.profil.identifiant);
-          setRole(result.profil.role);
+          setRole(result.profil.role);  
           setNom(result.profil.nom);
           setPrenom(result.profil.prenom);
           setProfilePicture(result.profil.photo_profil);

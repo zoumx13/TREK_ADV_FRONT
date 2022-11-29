@@ -10,17 +10,18 @@ function AccueilGuide() {
   const navigate = useNavigate();
   const [calendarDetails, setCalendarDetails] = useState([]);
   const [data, setData] = useState([]);
-  const token = localStorage.getItem("token");
   const date = new Date();
   const newDate = date.toISOString().slice(0, 10);
+  const token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token,
+  };
   
   async function LoadResa() {
     let options = {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: headers
     };
     // fetch pour récupérer toutes les réservations du guide
     let response = await fetch(

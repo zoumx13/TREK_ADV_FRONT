@@ -1,35 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { SelectColumnFilter } from "./Components/Filter";
+import Table from "./Components/TableContainer";
 import DatePicker from "react-datepicker";
 import Modal from "react-modal";
+import { Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 import "./AffichageResasAdmin.css";
 
 function ResasAdmin() {
-  const [refresh,setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
   const [allParcours, setAllParcours] = useState([]);
+  const [allResa, setAllResa] = useState([]);
   const [idParcours, setIdParcours] = useState("");
   const [idResa, setIdResa] = useState("");
   const [openResa, setOpenResa] = useState(false);
   const [displayResa, setDisplayResa] = useState(false);
-
-
-
   const [index, setIndex] = useState();
   const [indexResa, setIndexResa] = useState();
-
   const [tabClients, setTabClients] = useState([]);
   const [listGuide, setListGuide] = useState([]);
   const [dateResa, setDateResa] = useState(new Date());
   const [maxClients, setMaxClients] = useState();
-  const [creaResa, setCreaResa] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalGuide, setModalGuide] = useState(false);
+  const date = new Date();
+  const newDate = date.toISOString().slice(0, 10);
   const token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + token,
   };
-
+  const columns = useMemo(() => [
+    {
+      Header: "Réservations à venir",
+      columns: [
+        {
+          Header: "Nom parcours",
+          accessor: "nomParcours",
+          Filter: SelectColumnFilter,
+          filter: "includes",
+        },
+        {
+          Header: "Date",
+          accessor: "dateReservation",
+          disableFilters: true,
+        },
+        {
+          id: 'openResa',
+          Header: "Réservation ouverte",
+          accessor : b => {return b.openResa ? "Ouverte" : "Fermée"},
+          Filter: SelectColumnFilter,
+          filter: "includes",
+        },
+        {
+          id: "clients",
+          Header: "Nombre réservations",
+          accessor: r => {return r.clients.length},
+          // accessor: "clients",
+          disableFilters: true,
+          // Cell: ({ cell: { value } }) => value.length,
+        },
+        {
+          Header: "Nombre clients max",
+          accessor: "maxClients",
+          disableFilters: true,
+        },
+        {
+          id: 'idGuide',
+          Header: "Guide",
+          accessor: g => {return g.idGuide==="" ? "***" : (
+            listGuide.filter((guide) => guide.id === g.idGuide)[0].nom +
+            " " +
+            listGuide.filter((guide) => guide.id === g.idGuide)[0].prenom
+          )},
+          Filter: SelectColumnFilter,
+          filter: "includes",
+        },
+      ],
+    },
+  ]);
   const customStyles = {
     content: {
       top: "50%",
@@ -50,7 +100,6 @@ function ResasAdmin() {
       transform: "translate(-50%, -50%)",
     },
   };
-
   function openModal() {
     setIsOpen(true);
   }
@@ -77,7 +126,6 @@ function ResasAdmin() {
       setAllParcours(donnes.reverse());
     }
   }
-
   async function CreateResa() {
     let dataCrea = {
       openResa: true,
@@ -98,13 +146,20 @@ function ResasAdmin() {
       return;
     } else {
       alert("Réservation ouverte");
-      setRefresh(!refresh)
+      setRefresh(!refresh);
     }
   }
-
+  async function ListGuide() {
+    let options = {
+      method: "GET",
+      headers: headers,
+    };
+    let reponse = await fetch("http://127.0.0.1:8080/users/listguide", options);
+    let donnees = await reponse.json();
+    setListGuide(donnees);
+  }
   async function AssignGuide() {
     let idGuide = document.getElementById("guideChoice").value;
-    console.log("VALUE ", idResa, idGuide);
     let data = {
       idGuide: idGuide,
       resaId: idResa,
@@ -120,23 +175,9 @@ function ResasAdmin() {
     );
     await reponse.json();
     alert("Guide ajouté");
+    setRefresh(!refresh);
     closeModalGuide();
   }
-
-  async function ListGuide() {
-    let options = {
-      method: "GET",
-      headers: headers,
-    };
-    let reponse = await fetch("http://127.0.0.1:8080/users/listguide", options);
-    let donnees = await reponse.json();
-    setListGuide(donnees);
-  }
-
-  async function getClientsByResa() {
-    let allClients = [];
-  }
-
   async function GetClients() {
     if (allParcours != "") {
       //Je créer un tableau vide
@@ -171,17 +212,31 @@ function ResasAdmin() {
       console.log("tabClients : ", tabClientRequest);
     }
   }
+  async function loadAllResa() {
+    let options = {
+      method: "GET",
+      headers: headers,
+    };
+    let reponse = await fetch(
+      "http://127.0.0.1:8080/reservations/allReservations",
+      options
+    );
+    let donnees = await reponse.json();
+    const array = donnees.filter((date) => date.dateReservation >= newDate);
+    setAllResa(array);
+  }
 
   useEffect(() => {
     //Lance le loadParcours et renvoie des donnees vides au 1er chargement
     LoadParcours();
   }, [refresh]);
-
+  useEffect(() => {
+    loadAllResa();
+  }, [refresh]);
   useEffect(() => {
     //Quand on met à jour l'index résas sur le clic sur le bouton on lance getClients et met à jour indexResa
     ListGuide();
   }, []);
-
   useEffect(() => {
     //Quand on met à jour l'index résas sur le clic sur le bouton on lance getClients et met à jour indexResa
     GetClients();
@@ -191,7 +246,7 @@ function ResasAdmin() {
     <header>
       <div id="Resa">
         <div className="scrollbar2" id="style-4">
-          <ul>
+          <ul className="d-flex">
             {allParcours?.map((item, index) => (
               <li key={item._id}>
                 <div className="box">
@@ -233,13 +288,13 @@ function ResasAdmin() {
                             Nombre de réservations : {item.reservations.length}
                           </p>
                         </div>
-                        <button
+                        <Button
+                          variant="warning"
                           className="btn"
                           onClick={() => {
                             setDisplayResa(!displayResa);
                             setOpenResa(false);
                             setIdParcours(item._id);
-
 
                             setIndex(index);
                             setIdResa("");
@@ -247,21 +302,22 @@ function ResasAdmin() {
                           }}
                         >
                           Détail réservations
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="warning"
                           className="btn"
                           onClick={() => {
                             setOpenResa(!openResa);
                             setDisplayResa(false);
                             setIdParcours(item._id);
-                            
+
                             setIndex("");
                             setIdResa("");
                             setTabClients();
                           }}
                         >
                           Ouvrir réservation
-                        </button>
+                        </Button>
                       </article>
                     </div>
                   </div>
@@ -269,6 +325,7 @@ function ResasAdmin() {
               </li>
             ))}
           </ul>
+          <Table columns={columns} data={allResa} />
         </div>
         <div>
           {openResa === true && (
@@ -279,9 +336,9 @@ function ResasAdmin() {
                     id="date"
                     dateFormat="yyyy-MM-dd"
                     selected={dateResa}
-                    onSelect={(date) =>
-                      console.log("DATE", date.toISOString().slice(0, 10))
-                    }
+                    // onSelect={(date) =>
+                    //   console.log("DATE", date.toISOString().slice(0, 10))
+                    // }
                     onChange={(date) => setDateResa(date)}
                   />
                   <input
@@ -292,7 +349,8 @@ function ResasAdmin() {
                     onChange={(event) => setMaxClients(event.target.value)}
                   />
 
-                  <button
+                  <Button
+                    variant="warning"
                     id="btn-resa"
                     onClick={() => {
                       CreateResa();
@@ -300,7 +358,7 @@ function ResasAdmin() {
                     }}
                   >
                     Ouvrir
-                  </button>
+                  </Button>
                 </div>
               </article>
             </li>
@@ -324,7 +382,8 @@ function ResasAdmin() {
                       <div>
                         <p id="3"> Nombre de clients max : {item.maxClients}</p>
                       </div>
-                      <button
+                      <Button
+                        variant="warning"
                         id="btn-client"
                         onClick={() => {
                           setIndexResa(index);
@@ -333,8 +392,9 @@ function ResasAdmin() {
                         }}
                       >
                         Liste clients
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="warning"
                         id="btn-guide"
                         onClick={() => {
                           setIdResa(item._id);
@@ -343,7 +403,7 @@ function ResasAdmin() {
                         }}
                       >
                         Attribuer Guide
-                      </button>
+                      </Button>
                     </article>
                   </li>
                 ))}
@@ -356,7 +416,9 @@ function ResasAdmin() {
                   style={customStyles}
                   contentLabel="Example Modal"
                 >
-                  <button onClick={closeModal}>close</button>
+                  <Button variant="warning" onClick={closeModal}>
+                    close
+                  </Button>
                   {tabClients?.map((item) => {
                     return (
                       <li key={item._id}>
@@ -402,13 +464,14 @@ function ResasAdmin() {
                           })}
                         </select>
                       </div>
-                      <button
+                      <Button
+                        variant="warning"
                         onClick={() => {
                           AssignGuide();
                         }}
                       >
                         Valider
-                      </button>
+                      </Button>
                     </article>
                   </li>
                 </ul>

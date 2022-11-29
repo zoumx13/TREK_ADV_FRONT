@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import LineGraph from "./Components/LineGraph";
 import Pie from "./Components/Pie";
 import Calendar from "./Components/Calendar";
-import Map from "./Components/Map";
-
 import "./AccueilAdmin.css";
 
 export default function AccueilAdmin() {
@@ -33,10 +31,7 @@ export default function AccueilAdmin() {
   async function nextParcours() {
     let options = {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
+      headers: headers
     };
     // fetch pour récupérer la derniere reservation
     let response = await fetch(
@@ -57,6 +52,7 @@ export default function AccueilAdmin() {
       });
     }
   }
+
 
   useEffect(() => {
     ListGuide();
@@ -97,39 +93,7 @@ export default function AccueilAdmin() {
           <LineGraph />
         </div>
         <div className="CA">CA</div>
-        <div className="mapAccueilAdmin">
-          <Map />
-        </div>
       </div>
     </div>
   );
-}
-
-{
-  /* <div>
-<div className="imgAccueilAdmin">
-  <div className="Welcome">
-    <p className="W1">Bienvenue Admin</p>
-  </div>
-  <div className="Next">
-    <p className="Next1">Prochaine sortie : </p>
-  </div>
-  {nextTrek != undefined && guide != undefined &&
-  <div className="texteP">
-    <p>Le : {nextTrek[0].reservation.dateReservation}</p>
-    <p>Site de parcours : {nextTrek[0].parcours.nomParcours}</p>
-    <p>Guide : {guide[0]} {guide[1]} </p>
-    <p>Clients inscrits : {nextTrek[0].reservation.clients.length}</p>
-    <p>Clients maximum : {nextTrek[0].reservation.maxClients}</p>
-  </div>
-  }
-  <div className="calendar">
-  <FullCalendar
-    plugins={[dayGridPlugin]}
-    initialView="dayGridMonth"
-    events={calendarDetails}
-  />
-</div>
-</div>
-</div> */
 }

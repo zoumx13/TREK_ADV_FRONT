@@ -1,15 +1,20 @@
-import "./Home.css";
-import "./presentation.css"
+import React from "react";
+import home from "../../../assets/home.mp4"
+import "./style.css"
 
 function Home() {
   return (
     <div className="home">
-      {/* <body classname="img"> */}
+      <div className="overlay"></div>
+      <video src={home} autoPlay loop muted/>
+      <div className="content">
+        <h2 className="heading">My Trek Adventure</h2>
+      </div>
 
-      <div className="img"> </div>
 
-      <h2 className="heading">My Trek Adventure</h2>
 
+
+      
       {/* </body> */}
       <div className="fondVert"></div>
       <div className="presentation">

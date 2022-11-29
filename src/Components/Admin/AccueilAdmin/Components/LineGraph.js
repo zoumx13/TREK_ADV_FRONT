@@ -1,29 +1,61 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title,CategoryScale } from 'chart.js';
-Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
+import SelectBox from "devextreme-react/select-box";
+import {
+  Chart,
+  Series,
+  ArgumentAxis,
+  CommonSeriesSettings,
+  CommonAxisSettings,
+  Grid,
+  Export,
+  Legend,
+  Margin,
+  Tooltip,
+  Label,
+  Format,
+} from "devextreme-react/chart";
 
-export default function LineGraph(){
-// Sample data for LINE GRAPH
-const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "First dataset",
-        data: [33, 53, 85, 41, 44, 65],
-        fill: true,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,1)",
-      },
-      {
-        label: "Second dataset",
-        data: [33, 25, 35, 51, 54, 76],
-        fill: false,
-        borderColor: "#742774",
-      },
-    ],
+export default function LineGraph() {
+  const token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+    authorization: `Bearer ` + token,
   };
-  return(
-    <Line data={data} />
-  )
+  return (
+    <div>
+      <Chart
+        palette="Green"
+        // dataSource={sharingStatisticsInfo}
+        title="A DEFINIR"
+      >
+        {/* <CommonSeriesSettings argumentField="year" type={this.state.type} /> */}
+        <CommonAxisSettings>
+          <Grid visible={true} />
+        </CommonAxisSettings>
+        {/* {architectureSources.map((item) => (
+          <Series key={item.value} valueField={item.value} name={item.name} />
+        ))} */}
+        <Margin bottom={20} />
+        <ArgumentAxis allowDecimals={false} axisDivisionFactor={60}>
+          <Label>
+            <Format type="decimal" />
+          </Label>
+        </ArgumentAxis>
+        <Legend verticalAlignment="top" horizontalAlignment="right" />
+        <Export enabled={true} />
+        <Tooltip enabled={true} />
+      </Chart>
+      <div className="options">
+        <div className="caption">Options</div>
+        <div className="option">
+          <span>Series Type </span>
+          {/* <SelectBox
+            dataSource={this.types}
+            value={this.state.type}
+            onValueChanged={this.handleChange}
+          /> */}
+        </div>
+      </div>
+    </div>
+  );
 }
