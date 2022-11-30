@@ -1,8 +1,10 @@
 import React from "react";
 import { useTable, useFilters, useGlobalFilter } from "react-table";
 import { GlobalFilter, DefaultFilterForColumn } from "./Filter";
+import {Table} from "react-bootstrap"
 
-export default function Table({ columns, data }) {
+
+export default function DataTable({ columns, data }) {
   const {
     getTableProps,
     getTableBodyProps,
@@ -25,7 +27,7 @@ export default function Table({ columns, data }) {
 
 
   return (
-    <table {...getTableProps()}>
+    <Table striped bordered hover {...getTableProps()}>
       <thead>
         <tr>
           <th
@@ -47,6 +49,9 @@ export default function Table({ columns, data }) {
             {headerGroup.headers.map((column) => (
               <th {...column.getHeaderProps()}>
                 {column.render("Header")}
+                {/* <div>
+                  {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
+                </div> */}
                 <div>{column.canFilter ? column.render("Filter") : null}</div>
               </th>
             ))}
@@ -58,13 +63,13 @@ export default function Table({ columns, data }) {
           prepareRow(row);
           return (
             <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+            {row.cells.map((cell) => {
+                return <td  {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
             </tr>
           );
         })}
       </tbody>
-    </table>
+    </Table>
   );
 }

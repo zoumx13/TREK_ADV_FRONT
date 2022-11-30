@@ -3,7 +3,6 @@ import 'devextreme/dist/css/dx.light.css';
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./App.css";
 import React from "react";
-import Connexion from "./Components/Generique/Connexion/connexion";
 import Home from "./Components/Generique/Home/home";
 import Contact from "./Components/Generique/Contact/contact";
 import Parcours from "./Components/Admin/ParcoursAdmin/CreateParcours/CreateParcours";
@@ -16,7 +15,7 @@ import ModifyParcours from "./Components/Admin/ParcoursAdmin/ModifyParcours/Modi
 import ResasAdmin from "./Components/Admin/AffichageResasAdmin/AffichageResasAdmin";
 import ProfilGuide from "./Components/Guide/ProfilGuide/ProfilGuide";
 
-import NavBar from "./Components/Generique/NavBar";
+import NavBar from "./Components/Generique/NavBar/NavBar";
 
 import CreateGuide from "./Components/Admin/CreaModSuppGuide/CreateGuide";
 import ReservationsDetails from "./Components/Guide/DetailsResa/DetailsResa";
@@ -29,7 +28,6 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" exact element={<Home></Home>}></Route>
-        <Route path="/connexion" element={<Connexion></Connexion>}></Route>
         <Route path="/contact" element={<Contact></Contact>}></Route>
         
         <Route
