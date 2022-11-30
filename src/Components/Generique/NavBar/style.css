@@ -1,0 +1,25 @@
+.navbar{
+    height: 80px;
+}
+
+.container{
+    width : 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+.logo{
+    margin-left: 0;
+}
+.allMenu{
+    display : flex;
+}
+
+/* .category{
+    justify-content: center;
+} */
+
+.button{
+    position : absolute;
+    margin-right: 10px;
+    right: 0;
+}

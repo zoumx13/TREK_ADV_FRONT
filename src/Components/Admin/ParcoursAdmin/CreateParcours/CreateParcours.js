@@ -1,6 +1,6 @@
-import "./Create.css";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button, Card, Modal } from "react-bootstrap";
 
 function Parcours() {
   const navigate = useNavigate();
@@ -11,22 +11,24 @@ function Parcours() {
   const [prix, setPrix] = useState();
   const [niveauDifficulte, setNiveauDifficulte] = useState();
   const [descriptionParcours, setDescriptionParcours] = useState();
-  const [imgIllustration, setImgIllustration] = useState([]);
+  const [image, setImage] = useState([]);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  let token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "application/json",
-    // authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+    Authorization: "Bearer " + token,
   };
-  const [image, setImage] = useState([]);
 
   const UploadImages = (e) => {
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     };
-
     setImage(img);
   };
-
+  function closeModal() {
+    setIsOpen(false);
+  }
   async function LoadParcours() {
     let options = {
       method: "GET",
@@ -46,11 +48,11 @@ function Parcours() {
   const AddParcours = async (event) => {
     event.preventDefault();
     if (
-      nomParcours == "" ||
-      dureeParcours == "" ||
-      prix == "" ||
-      niveauDifficulte == "" ||
-      descriptionParcours == ""
+      nomParcours === "" ||
+      dureeParcours === "" ||
+      prix === "" ||
+      niveauDifficulte === "" ||
+      descriptionParcours === ""
     ) {
       alert("Veuillez remplir tous les champs");
     } else {
@@ -79,8 +81,9 @@ function Parcours() {
           formData.append("file", image.data);
           let options = {
             method: "POST",
+            // headers : headers,
             headers: {
-              Authorization: "bearer " + id,
+              Authorization: "bearer " + token,
               // "Content-Type": "multipart/form-data boundary=something",
             },
             body: formData,
@@ -105,6 +108,19 @@ function Parcours() {
       setParcours(!parcours);
     }
   };
+  const deleteParcours = async (id) => {
+    let options = {
+      method: "DELETE",
+      headers: headers,
+    };
+    let response = await fetch(
+      `http://127.0.0.1:8080/parcours/deleteParcours/${id}`,
+      options
+    );
+    await response.json();
+    setParcours(!parcours);
+    alert(`Parcours supprimé.`);
+  };
   useEffect(() => {
     LoadParcours();
   }, [parcours, image]);
@@ -112,61 +128,52 @@ function Parcours() {
     <header>
       <div id="Parcour">
         <div className="scrollbar" id="style-3">
-          <ul>
+          <ul className="d-flex">
             {data.map((item) => (
               <li key={item._id}>
-                <div className="box">
-                  <div className="box-inner">
-                    <div className="box-front">
-                      <h3>{item.nomParcours}</h3>
-                      <img
-                        alt=""
-                        className="img-1"
-                        src={`http://127.0.0.1:8080/parcours/${item.imgIllustration}`}
-                      ></img>
-                    </div>
-                    <div className="box-back">
-                      <article>
-                        <div>
-                          <p className="Para">
-                            Durée du parcours : {item.dureeParcours}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="Para">{item.description}</p>
-                        </div>
-                        <div>
-                          <p className="Para">Prix : {item.prix} €</p>
-                        </div>
-                        <div>
-                          <p className="Para">
-                            Niveau de difficulté : {item.niveauDifficulte}
-                          </p>
-                        </div>
-
-                        <button
-                          className="btn"
-                          onClick={() => DetailsParcours(item._id)}
-                        >
-                          Détail du parcours
-                        </button>
-                      </article>
-                    </div>
-                  </div>
-                </div>
+                <Card style={{ width: "18rem", height: "100%" }}>
+                  <Card.Img
+                    variant="top"
+                    src={`http://127.0.0.1:8080/parcours/${item.imgIllustration}`}
+                  />
+                  <Card.Body>
+                    <Card.Title>{item.nomParcours}</Card.Title>
+                    <Card.Text>{item.description}</Card.Text>
+                    <Button
+                      variant="primary"
+                      onClick={() => DetailsParcours(item._id)}
+                    >
+                      Détails
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => deleteParcours(item._id)}
+                    >
+                      Supprimer
+                    </Button>
+                  </Card.Body>
+                </Card>
               </li>
             ))}
           </ul>
         </div>
+
         <div className="Creation-Parcours">
           <p className="Para">Gestion des parcours</p>
+          <Button variant="warning" onClick={() => setIsOpen(true)}>
+            <span>Créer parcours</span>
+          </Button>
         </div>
-
-        <div className="princip">
-          <div className="container1">
-            <div className="Gestion">
-              <p className="Para">Creation des Parcours</p>
-            </div>
+        <Modal
+          show={modalIsOpen}
+          onHide={closeModal}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Création parcours</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
             <div className="Nom">
               <input
                 type="text"
@@ -176,17 +183,16 @@ function Parcours() {
                 onChange={(e) => setNomParcours(e.target.value)}
               />
             </div>
-
             <div className="Durée">
               <input
-                type="text"
+                type="time"
+                min="0:00"
                 id="durée"
                 placeholder="Durée du parcours"
                 value={dureeParcours}
                 onChange={(e) => setDureeParcours(e.target.value)}
               />
             </div>
-
             <div className="Description">
               <textarea
                 type="text"
@@ -196,10 +202,10 @@ function Parcours() {
                 onChange={(e) => setDescriptionParcours(e.target.value)}
               />
             </div>
-
             <div className="Prix">
               <input
-                type="text"
+                type="number"
+                min="0"
                 id="prix"
                 placeholder="Prix"
                 value={prix}
@@ -207,12 +213,13 @@ function Parcours() {
               />
             </div>
 
-            <p className="Nouv-Img">Entrez Nouvelle Image</p>
+            {!image.preview ? (
+              <p className="Nouv-Img">Entrez Nouvelle Image</p>
+            ) : (
+              <img src={image.preview} />
+            )}
 
             <div className="input-img">
-              {/* <label className="" htmlFor="img">
-                Entrez Nouvelle Image
-              </label> */}
               <input
                 type="file"
                 name="image"
@@ -221,22 +228,27 @@ function Parcours() {
                 id="uploadBtn"
               />
             </div>
-
             <div className="Difficulté">
               <input
-                type="text"
+                type="number"
+                min="1"
+                max="3"
                 id="difficulté"
                 placeholder="Niveau difficulté 1 à 3"
                 value={niveauDifficulte}
                 onChange={(e) => setNiveauDifficulte(e.target.value)}
               />
             </div>
-            <div className="btn-01">
-              <button onClick={AddParcours}>Valider</button>
-            </div>
-          </div>
-        </div>
-        <img alt="" className="imgFond11"></img>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => AddParcours()}>
+              Valider
+            </Button>
+            <Button variant="secondary" onClick={() => setIsOpen(false)}>
+              Annuler
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </header>
   );

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, {  useContext } from "react";
 import { userContext } from "../../../context/userContext";
-import { useNavigate } from "react-router-dom";
 import "./ProfilGuide.css";
 
 
@@ -10,14 +9,14 @@ export default function ProfilGuide() {
   return (
     <div>
 
-    <img className="imgProfil1"></img>
+    <img alt="" className="imgProfil1"></img>
 
       <main className="Mainf1">
         <section className="top-card">
           <img
             className="img-profile"
             src={`http://127.0.0.1:8080/users/${profilePicture}`}
-            alt="user picture"
+            alt="user"
           />
           <div className="menu-icon">
             <div className="menu item1"></div>

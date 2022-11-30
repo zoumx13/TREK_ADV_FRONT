@@ -13,15 +13,14 @@ export default function ReservationsDetails() {
   const [allStep, setAllStep] = useState([]);
   const [allClients, setAllClients] = useState([]);
   const [modalIsOpen, setIsOpen] = useState(false);
-  let subtitle;
-
+  const token = localStorage.getItem("token");
   const markerIcon = new L.Icon({
     iconUrl: require("./marker.png"),
     iconSize: [35, 45],
   });
   const headers = {
     "Content-Type": "application/json",
-    // authorization: `Bearer ${JSON.parse(localStorage.getdetails("token"))}`,
+    authorization: `Bearer `+ token,
   };
   const customStyles = {
     content: {
@@ -33,6 +32,7 @@ export default function ReservationsDetails() {
       transform: "translate(-50%, -50%)"
     },
   };
+  let subtitle;
   // Récupération info parcours et infos résa
   async function getResaDetails(idParcours, idResa) {
     let step = [];
@@ -64,6 +64,7 @@ export default function ReservationsDetails() {
         });
       });
       setAllStep(step);
+      console.log(step)
     }
   }
   function openModal() {

@@ -1,9 +1,9 @@
-import { Routes, Route, Outlet, Link, BrowserRouter } from "react-router-dom";
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import "./App.css";
-import React, { useEffect } from "react";
-import Connexion from "./Components/Generique/Connexion/connexion";
+import React from "react";
 import Home from "./Components/Generique/Home/home";
-import Présentation from "./Components/Generique/Presentation/presentation";
 import Contact from "./Components/Generique/Contact/contact";
 import Parcours from "./Components/Admin/ParcoursAdmin/CreateParcours/CreateParcours";
 // import Footer from './components/footer';
@@ -15,11 +15,12 @@ import ModifyParcours from "./Components/Admin/ParcoursAdmin/ModifyParcours/Modi
 import ResasAdmin from "./Components/Admin/AffichageResasAdmin/AffichageResasAdmin";
 import ProfilGuide from "./Components/Guide/ProfilGuide/ProfilGuide";
 
-import Déconnexion from "./Components/Generique/Deconnexion/deconnexion";
-import NavBar from "./Components/Generique/NavBar";
+import NavBar from "./Components/Generique/NavBar/NavBar";
 
-import CreateGuide from "./Components/Admin/CreaModSuppGuide/CreaGuide/CreateGuide";
+import CreateGuide from "./Components/Admin/CreaModSuppGuide/CreateGuide";
 import ReservationsDetails from "./Components/Guide/DetailsResa/DetailsResa";
+
+
 
 function App() {
   return (
@@ -27,28 +28,21 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" exact element={<Home></Home>}></Route>
-        <Route path="/connexion" element={<Connexion></Connexion>}></Route>
-        <Route
-          path="/présentation"
-          exact
-          element={<Présentation></Présentation>}
-        ></Route>
         <Route path="/contact" element={<Contact></Contact>}></Route>
+        
+        <Route
+          path="/AccueilAdmin"
+          element={<AccueilAdmin></AccueilAdmin>}
+        ></Route>
         <Route path="/parcours" exact element={<Parcours></Parcours>}></Route>
+
 
         <Route
           path="/parcours/details/:id"
           exact
           element={<ModifyParcours />}
         ></Route>
-        <Route
-          path="/deconnexion"
-          element={<Déconnexion></Déconnexion>}
-        ></Route>
-        <Route
-          path="/AccueilAdmin"
-          element={<AccueilAdmin></AccueilAdmin>}
-        ></Route>
+
 
         <Route
           path="/AccueilGuide"
@@ -75,6 +69,7 @@ function App() {
           path="/AffichageResasAdmin"
           element={<ResasAdmin></ResasAdmin>}
         ></Route>
+
       </Routes>
       {/* <div><Footer></Footer></div> */}
     </BrowserRouter>
