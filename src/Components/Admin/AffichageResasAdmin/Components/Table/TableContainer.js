@@ -1,8 +1,7 @@
 import React from "react";
 import { useTable, useFilters, useGlobalFilter } from "react-table";
 import { GlobalFilter, DefaultFilterForColumn } from "./Filter";
-import {Table} from "react-bootstrap"
-
+import { Table } from "react-bootstrap";
 
 export default function DataTable({ columns, data }) {
   const {
@@ -22,9 +21,8 @@ export default function DataTable({ columns, data }) {
       defaultColumn: { Filter: DefaultFilterForColumn },
     },
     useFilters,
-    useGlobalFilter,
+    useGlobalFilter
   );
-
 
   return (
     <Table striped bordered hover {...getTableProps()}>
@@ -63,8 +61,8 @@ export default function DataTable({ columns, data }) {
           prepareRow(row);
           return (
             <tr {...row.getRowProps()}>
-            {row.cells.map((cell) => {
-                return <td  {...cell.getCellProps()}>{cell.render("Cell")}</td>;
+              {row.cells.map((cell) => {
+                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
             </tr>
           );

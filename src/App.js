@@ -5,14 +5,13 @@ import "./App.css";
 import React from "react";
 import Home from "./Components/Generique/Home/home";
 import Contact from "./Components/Generique/Contact/contact";
-import Parcours from "./Components/Admin/ParcoursAdmin/CreateParcours/CreateParcours";
 // import Footer from './components/footer';
 
 import AccueilAdmin from "./Components/Admin/AccueilAdmin/AccueilAdmin";
 import AccueilGuide from "./Components/Guide/AccueilGuide/AccueilGuide";
 import AccueilClient from "./Components/Client/AccueilClient";
 import ModifyParcours from "./Components/Admin/ParcoursAdmin/ModifyParcours/ModifyParcours";
-import ResasAdmin from "./Components/Admin/AffichageResasAdmin/AffichageResasAdmin";
+import ResasAdmin from "./Components/Admin/AffichageResasAdmin/ParcoursReservations";
 import ProfilGuide from "./Components/Guide/ProfilGuide/ProfilGuide";
 
 import NavBar from "./Components/Generique/NavBar/NavBar";
@@ -34,7 +33,6 @@ function App() {
           path="/AccueilAdmin"
           element={<AccueilAdmin></AccueilAdmin>}
         ></Route>
-        <Route path="/parcours" exact element={<Parcours></Parcours>}></Route>
 
 
         <Route

@@ -1,0 +1,32 @@
+/* Scrollbar */
+
+#Parcour .scrollbar
+{
+	overflow-x: scroll;
+    margin-bottom: 15px;
+ 
+}
+
+
+#Parcour #style-3::-webkit-scrollbar-track
+ {
+     box-shadow: inset 0 0 6px #12413c;
+     background-color: #ffffff00;
+     margin-left:  200px;
+     margin-right:  200px;
+     border-radius: 20px;
+ }
+ 
+ #Parcour #style-3::-webkit-scrollbar
+ {
+     width: 6px;
+     height:  12px;
+ }
+ 
+ #Parcour #style-3::-webkit-scrollbar-thumb
+ {
+     background-color: #e58e26;
+     border-radius: 20px;
+ }
+
+/* Fin Scrollbar */

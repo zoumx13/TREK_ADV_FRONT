@@ -116,14 +116,11 @@ function NavBar() {
                     <Nav.Link className="link-1" href="/AccueilAdmin">
                       Accueil
                     </Nav.Link>
-                    <Nav.Link className="link-1" href="/parcours">
-                      Gestion des Parcours
-                    </Nav.Link>
                     <Nav.Link className="link-1" href="/createguide">
                       Gestion des Guides
                     </Nav.Link>
                     <Nav.Link className="link-1" href="/AffichageResasAdmin">
-                      Gestion des Réservations
+                      Gestion Parcours & Réservations
                     </Nav.Link>
                   </>
                 ) : (

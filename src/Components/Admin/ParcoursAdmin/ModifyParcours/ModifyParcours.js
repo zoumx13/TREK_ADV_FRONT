@@ -46,7 +46,7 @@ export default function ModifyParcours() {
     Authorization: "Bearer " + token,
   };
   const markerIcon = new L.Icon({
-    iconUrl: require("./marker.png"),
+    iconUrl: require("../../../../assets/marker.png"),
     iconSize: [35, 45],
   });
 

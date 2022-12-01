@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 
 export default function Map() {
   const markerIcon = new L.Icon({
-    iconUrl: require("./marker.png"),
+    iconUrl: require("../../../../assets/marker.png"),
     iconSize: [35, 45],
   });
   return (
