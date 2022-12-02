@@ -10,19 +10,10 @@ import "react-datepicker/dist/react-datepicker.css";
 function ResasAdmin() {
   // STOCK ALL DATA
   const [refresh, setRefresh] = useState(false);
-  const [allParcours, setAllParcours] = useState([]);
   const [allResa, setAllResa] = useState([]);
   const [listGuide, setListGuide] = useState([]);
+  const [listClients, setListClients] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-
-  // //MODIFY RESERVATION
-  // const [idParcours, setIdParcours] = useState("");
-  // const [idResa, setIdResa] = useState("");
-  // const [dateResa, setDateResa] = useState(new Date());
-  // const [openResa, setOpenResa] = useState();
-  // const [clientsResa, setClientsResa] = useState([]);
-  // const [maxClients, setMaxClients] = useState();
-  // const [idGuide, setIdGuide] = useState();
 
   // MODAL
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -30,6 +21,8 @@ function ResasAdmin() {
   const [deleteGuide, setDeleteGuide] = useState(false);
   const [infoClientsResa, setInfoClientsResa] = useState(false);
   const [clientsByResa, setClientsByResa] = useState([]);
+  const [maxClients, setMaxClients] = useState(false);
+  const [showClientsList, setShowClentsList] = useState(false);
   const [row, setRow] = useState([]);
   const date = new Date();
   const newDate = date.toISOString().slice(0, 10);
@@ -59,10 +52,16 @@ function ResasAdmin() {
                   ];
                   console.log(boxes);
                   for (let i = 0; i < boxes.length; i++) {
-                    if (boxes[i].checked) {
+                    if (boxes[i]) {
+                      console.log(
+                        boxes[i].checked,
+                        "????????????????????????????"
+                      );
                       console.log([i]);
+                      console.log("YES");
+                    } else {
+                      console.log("no");
                     }
-                    console.log("no");
                   }
                   // const boxes =
                   //   document.getElementsByClassName("checkboxResaSelect");
@@ -96,6 +95,8 @@ function ResasAdmin() {
               aria-label="option 1"
               className="checkboxResaSelect"
               defaultChecked={checkAll}
+              onChange={(e) => handleChange(e)}
+              value={row}
             />
           ),
         },
@@ -140,10 +141,9 @@ function ResasAdmin() {
           Cell: ({ cell: { value, row } }) => (
             <>
               <Button
-                disabled={disableBtn(value)}
-                variant={btnColor(value)}
+                variant="outline-primary"
                 onClick={() => {
-                  setRow(row.original.clients);
+                  setRow(row.original);
                   showClients(row.original.clients);
                 }}
               >
@@ -156,6 +156,33 @@ function ResasAdmin() {
           Header: "Nombre clients max",
           accessor: "maxClients",
           disableFilters: true,
+          Cell: ({ cell: { value, row } }) => (
+            <>
+              {maxClients === false ? (
+                <>
+                  <p>{value}</p>
+                  {/* <input type="number" defaultValue={value} /> */}
+                  <Button
+                    value={row.original.idreservation}
+                    onClick={(e) => {
+                      console.log("ROW", e.target.value);
+                      setMaxClients(true);
+                    }}
+                  >
+                    ?
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <input type="number" min={"0"} defaultValue={value} />
+                  <Button variant="success">V</Button>
+                  <Button variant="danger" onClick={() => setMaxClients(false)}>
+                    A
+                  </Button>
+                </>
+              )}
+            </>
+          ),
         },
         // {
         //   id: "idGuide",
@@ -269,13 +296,6 @@ function ResasAdmin() {
     }
     return "primary";
   };
-  const disableBtn = (value) => {
-    if (value === 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
   // CHECKBOX
   const handleChangeBox = (props) => {
     console.log(props, "PROPS");
@@ -291,20 +311,10 @@ function ResasAdmin() {
       return false;
     }
   };
+  const handleChange = (e) => {
+    console.log("individual box", e.target.checked);
+  };
 
-  async function LoadParcours() {
-    let options = {
-      method: "GET",
-      headers: headers,
-    };
-    let response = await fetch("http://127.0.0.1:8080/parcours/", options);
-    let donnes = await response.json();
-    if (!donnes) {
-      return;
-    } else {
-      setAllParcours(donnes.reverse());
-    }
-  }
   async function loadAllResa() {
     let options = {
       method: "GET",
@@ -327,6 +337,7 @@ function ResasAdmin() {
     let donnees = await reponse.json();
     const allguides = [];
     const allusers = [];
+    const allclients = [];
     donnees.map((user) => {
       if (user.role === "guide") {
         allguides.push(user);
@@ -334,18 +345,24 @@ function ResasAdmin() {
       }
       if (user.role === "client") {
         allusers.push(user);
+        allclients.push(user);
       }
     });
     setListGuide(allguides);
     setAllUsers(allusers);
+    setListClients(allclients);
   }
 
   // CLOSE MODAL
   const closeModal = () => {
     setIsOpen(false);
+    setAddGuide(false);
     setDeleteGuide(false);
     setInfoClientsResa(false);
-    setAddGuide(false);
+    setShowClentsList(false);
+    setMaxClients(false);
+    setClientsByResa([]);
+    setRow([]);
   };
   // MODIFY RESERVATION
   async function ModifyReservation(
@@ -374,7 +391,7 @@ function ResasAdmin() {
       options
     );
     await reponse.json();
-
+    closeModal();
     setRefresh(!refresh);
     alert(`Réservation mis à jour`);
   }
@@ -387,6 +404,7 @@ function ResasAdmin() {
     const modifyClientsResa = row.clients;
     const modifyMaxClients = row.maxClients;
     const modifyIdGuide = row.idGuide;
+    setClientsByResa([]);
     ModifyReservation(
       idParcours,
       idResa,
@@ -416,29 +434,56 @@ function ResasAdmin() {
       modifyIdGuide
     );
   };
+  // MODIFY CLIENTS TO RESA
+  const modifyClientsResa = async (idClient) => {
+    let newList = [];
+    if (showClientsList === false) {
+      let updateList = row.clients;
+      updateList.map((client) => {
+        if (client.idClient !== idClient) {
+          newList.push(client);
+        }
+      });
+    } else {
+      let newClient = [];
+      newList = row.clients;
+      const clientAdded = listClients.filter((one) => one._id === idClient);
+      newClient.push({
+        idClient: idClient,
+        identifiant: clientAdded[0].identifiant,
+        date: Date(),
+        etapeCompletee: [],
+      });
+      newList.push(newClient[0]);
+    }
+    const idParcours = row.idparcours;
+    const idResa = row.idreservation;
+    const modifyClientsResa = newList;
+    ModifyReservation(idParcours, idResa, modifyClientsResa);
+  };
   // SHOW CLIENTS BY RESA
   const showClients = (props) => {
     let listClients = [];
     if (props.length > 0) {
       props.map((clients) => {
+        console.log(clients);
         const oneUser = allUsers.filter(
           (user) => user._id === clients.idClient
         );
         listClients.push({
-          _id: oneUser[0].id,
+          _id: oneUser[0]._id,
           nom: oneUser[0].nom,
           prenom: oneUser[0].prenom,
+          idBooking: clients._id,
         });
       });
+      console.log(listClients);
       setClientsByResa(listClients);
-      setInfoClientsResa(true);
-      setIsOpen(true);
     }
+    setInfoClientsResa(true);
+    setIsOpen(true);
   };
 
-  useEffect(() => {
-    LoadParcours();
-  }, [refresh]);
   useEffect(() => {
     loadAllResa();
   }, [refresh]);
@@ -489,19 +534,54 @@ function ResasAdmin() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {deleteGuide ? (
-              "Supprimer le guide de la réservation ?"
-            ) : infoClientsResa ? (
+            {deleteGuide && "Supprimer le guide de la réservation ?"}
+            {showClientsList && (
+              <div>
+                <label htmlFor="user_select">
+                  Sélectionnez un client: &nbsp;&nbsp;
+                </label>
+                <select name="clients" id="clients">
+                  <option value={""}>--</option>
+                  {listClients.map((clients) => {
+                    return (
+                      <option
+                        id="guideChoice"
+                        value={clients._id}
+                        key={clients._id}
+                      >
+                        {clients.nom} {clients.prenom}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
+            {infoClientsResa && (
               <ul className="">
                 {clientsByResa.map((client) => (
-                  <li key={client._id}>
+                  <li
+                    id="clientToDelete"
+                    key={client.idBooking}
+                    value={client._id}
+                  >
                     <p>
                       {client.nom} {client.prenom}
                     </p>
+                    <Button
+                      value={client._id}
+                      variant="danger"
+                      onClick={(e) => {
+                        // console.log(e.target.value);
+                        modifyClientsResa(e.target.value);
+                      }}
+                    >
+                      X
+                    </Button>
                   </li>
                 ))}
               </ul>
-            ) : (
+            )}
+            {addGuide && (
               <div>
                 <label htmlFor="user_select">
                   Sélectionnez un guide: &nbsp;&nbsp;
@@ -529,8 +609,7 @@ function ResasAdmin() {
                 onClick={() => {
                   let idGuide = "";
                   modifyGuide(idGuide);
-                  setIsOpen(false);
-                  setDeleteGuide(false);
+                  closeModal();
                 }}
               >
                 Supprimer
@@ -546,8 +625,21 @@ function ResasAdmin() {
               >
                 Valider
               </Button>
+            ) : showClientsList ? (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  let idClient = document.getElementById("clients").value;
+                  modifyClientsResa(idClient);
+                  closeModal();
+                }}
+              >
+                Valider
+              </Button>
             ) : (
-              <></>
+              <Button variant="primary" onClick={() => setShowClentsList(true)}>
+                Ajouter client
+              </Button>
             )}
             <Button
               variant="secondary"
