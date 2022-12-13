@@ -34,7 +34,6 @@ export default function Parcours() {
     Authorization: "Bearer " + token,
   };
 
-
   const UploadImages = (e) => {
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
@@ -175,9 +174,7 @@ export default function Parcours() {
         <div>
           <ul className="d-flex">
             <li>
-              <Card
-              border="success"
-              style={{ width: "18rem", height: "100%" }}>
+              <Card border="success" style={{ width: "18rem", height: "100%" }}>
                 <Card.Img
                   variant="top"
                   src={`http://127.0.0.1:8080/parcours/plan_avenir_montagne.jpg`}
@@ -204,7 +201,7 @@ export default function Parcours() {
                   <Card style={{ width: "18rem", height: "100%" }}>
                     <Card.Img
                       variant="top"
-                      src={`http://127.0.0.1:8080/parcours/${item.imgIllustration}`}
+                      src={`http://127.0.0.1:8080/${item.imgIllustration}`}
                     />
                     <Card.Body>
                       <Card.Title>{item.nomParcours}</Card.Title>

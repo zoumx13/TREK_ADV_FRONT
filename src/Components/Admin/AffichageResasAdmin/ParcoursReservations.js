@@ -35,6 +35,7 @@ function ResasAdmin() {
   // CHECKBOX
   const [checkMain, setCheckMain] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
+  const defaultProps = undefined;
 
   //  DATA TABLE
   const columnsReservations = useMemo(() => [
@@ -152,42 +153,82 @@ function ResasAdmin() {
             </>
           ),
         },
-        {
-          Header: "Nombre clients max",
-          accessor: "maxClients",
-          disableFilters: true,
-          Cell: ({ cell: { value, row } }) => (
-            <>
-              {maxClients === false ? (
-                <>
-                  <p>{value}</p>
-                  {/* <input type="number" defaultValue={value} /> */}
-                  <Button
-                    value={row.original.idreservation}
-                    onClick={(e) => {
-                      console.log("ROW", e.target.value);
-                      setMaxClients(true);
-                    }}
-                  >
-                    ?
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <input type="number" min={"0"} defaultValue={value} />
-                  <Button variant="success">V</Button>
-                  <Button variant="danger" onClick={() => setMaxClients(false)}>
-                    A
-                  </Button>
-                </>
-              )}
-            </>
-          ),
-        },
+        // {
+        //   Header: "Nombre clients max",
+        //   accessor: "maxClients",
+        //   disableFilters: true,
+        //   Cell: ({ cell: { value, row } }) => (
+        //     <>
+        //       <p>{value}</p>
+        //       {/* <input type="number" defaultValue={value} /> */}
+        //       <Button
+        //         className={row.original.idreservation}
+        //         id={row.original.idreservation}
+        //         value={row.original.idreservation}
+        //         style={{ visibility: "visible" }}
+        //         onClick={() => {
+        //           // let info = document.getElementById(
+        //           //   `${row.original.idreservation}`
+        //           // );
+        //           let info = document.getElementByClassName(
+        //             `${row.original.idreservation}`
+        //           );
+        //           let info2 =
+        //             document.getElementsByClassName("modifyMaxClients");
+        //           // info.style.visibility = "hidden";
+        //           // info2.style.visibility = "visible";
+        //           console.log("ROW", info.style);
+        //           console.log("22222222222222222222222222222", info2);
+        //           // setMaxClients(true);
+        //         }}
+        //       >
+        //         ?
+        //       </Button>
+        //       <input
+        //         className="modifyMaxClients"
+        //         style={{ visibility: "visible" }}
+        //         type="number"
+        //         min={"0"}
+        //         defaultValue={value}
+        //       />
+        //       <Button
+        //         className="modifyMaxClients"
+        //         style={{ visibility: "visible" }}
+        //         variant="success"
+        //       >
+        //         V
+        //       </Button>
+        //       <Button
+        //         className="modifyMaxClients"
+        //         // style={{ visibility: "hidden" }}
+
+        //         variant="danger"
+        //         onClick={() => {
+        //           let info = document.getElementById(
+        //             `${row.original.idreservation}`
+        //           );
+        //           let info2 =
+        //             document.getElementsByClassName("modifyMaxClients");
+        //           info.style.visibility = "visible";
+        //           // info2.style.visibility = "visible";
+        //           console.log("ROW", info.value);
+        //           console.log("22222222222222222222222222222", info2);
+        //           // setMaxClients(true);
+        //         }}
+
+        //         // onClick={() => setMaxClients(false)}
+        //       >
+        //         A
+        //       </Button>
+        //     </>
+        //   ),
+        // },
         // {
         //   id: "idGuide",
         //   Header: "Guide",
         //   accessor: (g) => {
+        //     console.log("GIDGUIDE", g.idGuide, 222222222222222222222);
+        //     console.log("LISTGUIDE", listGuide, 333333333333333333);
         //     return g.idGuide === "" || g.idGuide === undefined
         //       ? "N/A"
         //       : listGuide
@@ -399,38 +440,30 @@ function ResasAdmin() {
   const modifyOpenResa = (row) => {
     const idParcours = row.idparcours;
     const idResa = row.idreservation;
-    const modifyDateReservation = row.dateReservation;
     const modifyOpenResa = !row.openResa;
-    const modifyClientsResa = row.clients;
-    const modifyMaxClients = row.maxClients;
-    const modifyIdGuide = row.idGuide;
     setClientsByResa([]);
     ModifyReservation(
       idParcours,
       idResa,
-      modifyDateReservation,
+      defaultProps,
       modifyOpenResa,
-      modifyClientsResa,
-      modifyMaxClients,
-      modifyIdGuide
+      defaultProps,
+      defaultProps,
+      defaultProps
     );
   };
   // MODIFY GUIDE
   const modifyGuide = async (idGuide) => {
     const idParcours = row.idparcours;
     const idResa = row.idreservation;
-    const modifyDateReservation = row.dateReservation;
-    const modifyOpenResa = row.openResa;
-    const modifyClientsResa = row.clients;
-    const modifyMaxClients = row.maxClients;
     const modifyIdGuide = idGuide;
     ModifyReservation(
       idParcours,
       idResa,
-      modifyDateReservation,
-      modifyOpenResa,
-      modifyClientsResa,
-      modifyMaxClients,
+      defaultProps,
+      defaultProps,
+      defaultProps,
+      defaultProps,
       modifyIdGuide
     );
   };
@@ -459,7 +492,15 @@ function ResasAdmin() {
     const idParcours = row.idparcours;
     const idResa = row.idreservation;
     const modifyClientsResa = newList;
-    ModifyReservation(idParcours, idResa, modifyClientsResa);
+    ModifyReservation(
+      idParcours,
+      idResa,
+      defaultProps,
+      defaultProps,
+      modifyClientsResa,
+      defaultProps,
+      defaultProps
+    );
   };
   // SHOW CLIENTS BY RESA
   const showClients = (props) => {
@@ -485,16 +526,16 @@ function ResasAdmin() {
   };
 
   useEffect(() => {
-    loadAllResa();
+    loadUsers();
   }, [refresh]);
   useEffect(() => {
-    loadUsers();
+    loadAllResa();
   }, [refresh]);
 
   return (
     <>
       <header>
-        <Accordion defaultActiveKey={["0"]} alwaysOpen>
+        <Accordion defaultActiveKey={[""]} alwaysOpen>
           <Accordion.Item eventKey="0">
             <Accordion.Header>Parcours</Accordion.Header>
             <Accordion.Body>
@@ -607,7 +648,7 @@ function ResasAdmin() {
               <Button
                 variant="warning"
                 onClick={() => {
-                  let idGuide = "";
+                  let idGuide = "deleteGuide";
                   modifyGuide(idGuide);
                   closeModal();
                 }}

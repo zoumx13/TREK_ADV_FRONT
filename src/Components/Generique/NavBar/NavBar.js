@@ -27,10 +27,11 @@ function NavBar() {
     let reponse = await fetch("http://127.0.0.1:8080/users/signin", options);
 
     let donnees = await reponse.json();
-
+    console.log("DONNEES RETURN TOKEN", donnees);
     // Enregistrement du token dans le localStorage
     localStorage.setItem("token", donnees.token);
-    setIsOpen(false)
+    setIsOpen(false);
+    console.log("DONNEES RETURN TOKEN", donnees);
     if (donnees.message == "Connecté") {
       setIdentifiant(identifiant);
       setRole(donnees.userRole);
